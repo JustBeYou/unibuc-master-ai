@@ -1,57 +1,48 @@
-% === Criminal code ===
-% Translations using http://old.mpublic.ro/ump/multilingua_compendiu.pdf
-article(guilty_art_193).
-article(guilty_art_194).
+resolution(KB) :- member([], KB), !.
+resolution(KB) :- 
+    member(L1, KB),
+    member(L2, KB),
+    resolve(L, L1, L2),
+    \+ member(L, KB),
+    resolution([L | KB]), !.
 
-% Battery is violent act made by a person to another, resulting in the hospitalization
-% of the victim. 
+resolve(L, L1, L2) :- resolve_internal(L, L1, L2).
+resolve(L, L1, L2) :- resolve_internal(L, L2, L1).
+resolve_internal(L, L1, L2) :- 
+    select(R, L1, L1_prime), 
+    select(not(R), L2, L2_prime),
+    append(L1_prime, L2_prime, L_prime),
+    list_to_set(L_prime, L).
 
-battery(Defendant, HospitalizationDays) :- 
-    violence(ViolentAct, Defendant, Victim),
-    hospitalization(VictiomsHospitalization, Victim),
-    causality(ViolentAct, VictiomsHospitalization),
-    duration(VictiomsHospitalization, HospitalizationDays), !.
+negate(not(A), A) :- !.
+negate(A, not(A)).
 
-% art. 193 battery and other violent acts
-% If a person commits battery and the hospitalization period is shorter than 90 days,
-% the person is gulity due to article 193.
-guilty_art_193(Defendant) :-
-    battery(Defendant, HospitalizationDays),
-    HospitalizationDays =< 90, !.
+kb_test([
+	[f(X), X],
+     [not(f(a)), a],
+     [not(a)]
+   ]).
 
-% art. 194 aggravated battery
-% If a person commits battery and the hospitalization period is longer than 90 days,
-% the person is gulity due to article 194.
-guilty_art_194(Defendant) :-
-    battery(Defendant, HospitalizationDays),
-    HospitalizationDays > 90, !.
+kb_test1([
+	[a, b],
+           [not(a)],
+           [not(b)]
+         ]).
 
-% General definitions
-% A person is guilty if there is any article describing their act.
-guilty(Defendant, Article) :- article(Article), call(Article, Defendant), !.
-
-% === Example case ===
-
-% Ion assaulted Vasile.
-violence(ion_attacks_vasile, ion, vasile).
-% Vasile was hospitalized.
-hospitalization(vasiles_hospitalization, vasile).
-% The hospitalization lasted 45 days.
-duration(vasiles_hospitalization, 45).
-% The assault caused the hospitalization.
-causality(ion_attacks_vasile, vasiles_hospitalization).
-
-% === Ask for conclusions ===    
-
-% Is Ion guilty of anything?
-query(guilty(ion, _)). 
-
-% ==========================
-:- initialization(main).
-
-main :-
-    forall(query(Q), (Q -> writeln(yes:Q) ; writeln(no:Q))),
-    halt.
-
-% ==========================
+kb_assignment([
+     [guilty(X), not(brokeArt193(X))],
+     [guilty(X), not(brokeArt194(X))],
+     [brokeArt193(X), not(battery(X, h(X))), isLongerThan90Days(h(X))],
+     [brokeArt194(X), not(battery(X, h(X))), not(isLongerThan90Days(h(X)))],
+     [battery(X, h(X)), 
+     	not(violence(v(X), X, y(X))), 
+     	not(hospitalization(h(X), y(X))), 
+     	not(causality(v(X), h(X)))
+     ],
+     [violence(v(ion), ion, y(ion))],
+     [hospitalization(h(ion), y(ion))],
+     [isLongerThan90Days(h(ion))],
+     [causality(v(ion), h(ion))],
+     [not(guilty(ion))]
+              ]).
 
