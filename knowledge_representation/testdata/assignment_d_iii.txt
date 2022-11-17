@@ -1,0 +1,1 @@
+test_case_KB([[not(a),b],[c,f],[not(c)],[not(f),b],[not(c),b]]).

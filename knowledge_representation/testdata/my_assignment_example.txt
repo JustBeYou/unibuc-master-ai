@@ -1,0 +1,16 @@
+test_case_KB([
+    [guilty(X), not(brokeArt193(X))],
+    [guilty(X), not(brokeArt194(X))],
+    [brokeArt193(X), not(battery(X, h(X))), isLongerThan90Days(h(X))],
+    [brokeArt194(X), not(battery(X, h(X))), not(isLongerThan90Days(h(X)))],
+    [battery(X, h(X)), 
+    	not(violence(v(X), X, y(X))), 
+    	not(hospitalization(h(X), y(X))), 
+    	not(causality(v(X), h(X)))
+    ],
+    [violence(v(ion), ion, y(ion))],
+    [hospitalization(h(ion), y(ion))],
+    [isLongerThan90Days(h(ion))],
+    [causality(v(ion), h(ion))],
+    [not(guilty(ion))]
+]).
