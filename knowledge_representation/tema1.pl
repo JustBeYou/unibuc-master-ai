@@ -1,48 +1,57 @@
+:- initialization(main).
+main :- 
+	load_testcase('testdata/both_clauses_equal_after_removing_resolvent.txt', "not satisfied", _),
+	load_testcase('testdata/clauses_different_after_removing_resolvent.txt', "not satisfied", _),
+	load_testcase('testdata/satisfied.txt', "satisfied", _),
+	
+	load_testcase('testdata/assignment_d_i.txt', "not satisfied", _),
+	load_testcase('testdata/assignment_d_ii.txt', "not satisfied", _),
+	load_testcase('testdata/assignment_d_iii.txt', "satisfied", _),
+	load_testcase('testdata/assignment_d_iv.txt', "satisfied", _),
+	
+	writeln(""),
+	load_testcase('testdata/my_assignment_example.txt', "not satisfied", _),
+	writeln("The clauses in my_assignment_example.txt contain the negation of the proposition to be proved."),
+	writeln("Because the clauses generated the empty clause (system not satisfiable), we consider the proposition to be entitled from the KB."),
+	
+	halt.
+
+:- dynamic test_case_KB/1.
+load_testcase(Filename, Expected, Result) :-
+	see(Filename),
+	read(TestCase_KB),
+	assertz(TestCase_KB),
+	test_case_KB(KB),
+	include(not_tautology, KB, Filtered_KB),
+	test_case(Filename, Filtered_KB, Expected, Result),
+	retractall(test_case_KB(_)),
+	seen.
+	
+test_case(TestCase, KB, Expected, Result) :-
+	write("Test "), write(TestCase), write(", "), write(Expected), write(" expected => result: "),
+	( (resolution(KB), Result = "not satisfied") ; Result = "satisfied" ),
+	write(Result),
+	( Result == Expected -> writeln(" [OK]") ; writeln(" [FAILED]") ).
+
 resolution(KB) :- member([], KB), !.
 resolution(KB) :- 
-    member(L1, KB),
-    member(L2, KB),
-    resolve(L, L1, L2),
-    \+ member(L, KB),
-    resolution([L | KB]), !.
+    member(Premise_1, KB),
+    member(Premise_2, KB),
+	Premise_1 \= Premise_2,
+    resolve(Conclusion, Premise_1, Premise_2),
+	\+ member(Conclusion, KB),
+	\+ tautology(Conclusion),
+    resolution([Conclusion | KB]), !.
 
-resolve(L, L1, L2) :- resolve_internal(L, L1, L2).
-resolve(L, L1, L2) :- resolve_internal(L, L2, L1).
-resolve_internal(L, L1, L2) :- 
-    select(R, L1, L1_prime), 
-    select(not(R), L2, L2_prime),
-    append(L1_prime, L2_prime, L_prime),
-    list_to_set(L_prime, L).
+tautology(Clause) :- member(P, Clause), negate(P, Not_P), member(Not_P, Clause).
+not_tautology(Clause) :- \+ tautology(Clause).
 
-negate(not(A), A) :- !.
-negate(A, not(A)).
+resolve(Conclusion, Premise_1, Premise_2) :- 
+    select(Resolvent, Premise_1, Premise_1_prime),
+	negate(Resolvent, Not_Resolvent),
+    select(Not_Resolvent, Premise_2, Premise_2_prime),
+    append(Premise_1_prime, Premise_2_prime, Conclusion_prime),
+    list_to_set(Conclusion_prime, Conclusion).
 
-kb_test([
-	[f(X), X],
-     [not(f(a)), a],
-     [not(a)]
-   ]).
-
-kb_test1([
-	[a, b],
-           [not(a)],
-           [not(b)]
-         ]).
-
-kb_assignment([
-     [guilty(X), not(brokeArt193(X))],
-     [guilty(X), not(brokeArt194(X))],
-     [brokeArt193(X), not(battery(X, h(X))), isLongerThan90Days(h(X))],
-     [brokeArt194(X), not(battery(X, h(X))), not(isLongerThan90Days(h(X)))],
-     [battery(X, h(X)), 
-     	not(violence(v(X), X, y(X))), 
-     	not(hospitalization(h(X), y(X))), 
-     	not(causality(v(X), h(X)))
-     ],
-     [violence(v(ion), ion, y(ion))],
-     [hospitalization(h(ion), y(ion))],
-     [isLongerThan90Days(h(ion))],
-     [causality(v(ion), h(ion))],
-     [not(guilty(ion))]
-              ]).
-
+negate(not(P), P) :- !.
+negate(P, not(P)).
