@@ -43,7 +43,7 @@ resolution(KB) :-
 	\+ tautology(Conclusion),
     resolution([Conclusion | KB]), !.
 
-tautology(Clause) :- member(P, Clause), negate(P, Not_P), member(Not_P, Clause).
+tautology(Clause) :- member(P, Clause), negate(P, Not_P), member(Candidate_Not_P, Clause), subsumes_term(Not_P, Candidate_Not_P).
 not_tautology(Clause) :- \+ tautology(Clause).
 
 resolve(Conclusion, Premise_1, Premise_2) :- 
