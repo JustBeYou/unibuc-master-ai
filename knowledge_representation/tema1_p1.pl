@@ -8,6 +8,11 @@ main :-
 	load_testcase('testdata/assignment_d_ii.txt', "not satisfied", _),
 	load_testcase('testdata/assignment_d_iii.txt', "satisfied", _),
 	load_testcase('testdata/assignment_d_iv.txt', "satisfied", _),
+
+    load_testcase('testdata/assignment_2_ii.txt', "not satisfied", _), 
+    load_testcase('testdata/assignment_2_iii.txt', "not satisfied", _),
+    load_testcase('testdata/assignment_2_iv.txt', "not satisfied", _),
+    load_testcase('testdata/assignment_2_vi.txt', "not satisfied", _),
 	
 	writeln(""),
 	load_testcase('testdata/my_assignment_example.txt', "not satisfied", _),

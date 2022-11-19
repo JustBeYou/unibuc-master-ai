@@ -1,0 +1,1 @@
+test_case_KB([[toddler],[not(toddler),child],[not(child),not(male),boy],[not(infant),child],[not(child),not(female),girl], [female], [girl]]).
