@@ -7,5 +7,6 @@ include("training.jl")
 include("prediction.jl")
 include("metrics.jl")
 include("xor.jl")
+@load_generated_functions()
 
 end
