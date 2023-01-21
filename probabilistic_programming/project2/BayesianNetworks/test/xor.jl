@@ -5,14 +5,14 @@ using Test, BayesianNetworks
     X, y = BayesianNetworks.Xor.make_dataset(5000)
     scaler = BayesianNetworks.std_scaler_fit(X)
     X = BayesianNetworks.std_scaler_transform(scaler, X)
-    y_onehot = BayesianNetworks.Xor.encode_labels(y)
+    y_onehot = BayesianNetworks.encode_labels(y, BayesianNetworks.Xor.labels)
     network, _ = BayesianNetworks.train_model_using_gd(network, X, y_onehot, batchsize=512, epochs=100)
-    y_pred = BayesianNetworks.Xor.predict(network, X)
+    y_pred = BayesianNetworks.predict(network, X, BayesianNetworks.Xor.labels)
     @test BayesianNetworks.accuracy(y, y_pred) > 0.95
 
     test_X, test_y = BayesianNetworks.Xor.make_dataset(5000)
     test_X = BayesianNetworks.std_scaler_transform(scaler, test_X)
-    test_y_pred = BayesianNetworks.Xor.predict(network, test_X)
+    test_y_pred = BayesianNetworks.predict(network, test_X, BayesianNetworks.Xor.labels)
     @test BayesianNetworks.accuracy(test_y, test_y_pred) > 0.95
 end
 
@@ -24,7 +24,7 @@ end
     networks, _ = BayesianNetworks.infer_models_using_mcmc(network, X, y)
     mean_y_pred = zeros(last(size(X)))
     for network in networks
-        y_pred = BayesianNetworks.Xor.predict(network, X)
+        y_pred = BayesianNetworks.predict(network, X, BayesianNetworks.Xor.labels)
         mean_y_pred .+= y_pred
     end
     mean_y_pred = round.(mean_y_pred ./ length(networks))

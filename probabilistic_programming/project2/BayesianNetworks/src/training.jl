@@ -37,9 +37,9 @@ end
     network = reconstruct(parameters)
     pred = network(X)
 
-    y = Vector{Bool}(undef, last(size(X)))
+    y = Vector{Int}(undef, last(size(X)))
     for i in 1:last(size(y))
-        y[i] = Gen.@trace(Gen.bernoulli(pred[1, i]), :y => i)
+        y[i] = Gen.@trace(Gen.categorical(pred[:, i]), :y => i)
     end
 end
 
@@ -49,6 +49,7 @@ function infer_models_using_mcmc(
     burnin_epochs=1000, inference_epochs=100,
     ascending_select=true
 )
+    model = fmap(f64, model)
     parameters_0, reconstruct = Flux.destructure(model)
     N = length(parameters_0)
 
