@@ -7,7 +7,7 @@ using Test, BayesianNetworks
     scaler = BayesianNetworks.std_scaler_fit(X)
     X = BayesianNetworks.std_scaler_transform(scaler, X)
     y_onehot = BayesianNetworks.Xor.encode_labels(y)
-    network, _ = BayesianNetworks.train_model(network, X, y_onehot, batchsize=512, epochs=100)
+    network, _ = BayesianNetworks.train_model_using_gd(network, X, y_onehot, batchsize=512, epochs=100)
     y_pred = BayesianNetworks.Xor.predict(network, X)
     @test BayesianNetworks.accuracy(y, y_pred) > 0.95
 

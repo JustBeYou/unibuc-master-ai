@@ -1,6 +1,6 @@
 using Flux, ProgressMeter
 
-function train_model(
+function train_model_using_gd(
     model, X, y;
     optimizer=Flux.Adam(0.01),
     criterion=Flux.crossentropy,
