@@ -2,6 +2,7 @@ using Flux, ProgressMeter
 
 function train_model_using_gd(
     model, X, y;
+    val_X=nothing, val_y=nothing,
     optimizer=Flux.Adam(0.01),
     criterion=Flux.crossentropy,
     epochs=10,
@@ -12,7 +13,7 @@ function train_model_using_gd(
     dataloader = Flux.DataLoader((X, y) |> device, batchsize=batchsize, shuffle=true)
     optimizer = Flux.setup(optimizer, model)
 
-    losses = []
+    losses, val_losses = [], []
     @showprogress for _ in 1:epochs
         for (X_batch, y_batch) in dataloader
             loss, (gradients,) = Flux.withgradient(model) do m
@@ -20,12 +21,18 @@ function train_model_using_gd(
                 criterion(y_batch_hat, y_batch)
             end
 
+            if !isnothing(val_X)
+                val_y_hat = model(val_X)
+                val_loss = criterion(val_y_hat, val_y)
+                push!(val_losses, val_loss)
+            end
+
             Flux.update!(optimizer, model, gradients)
             push!(losses, loss)
         end
     end
 
-    return model, losses
+    return model, losses, val_losses
 end
 
 @gen function single_parameter_apriori(miu, sigma)
@@ -55,6 +62,7 @@ end
 
 function infer_models_using_mcmc(
     model, X, y, labels;
+    val_X=nothing, val_y=nothing,
     miu=0.0, sigma=1.0,
     burnin_epochs=50, inference_epochs=10,
     ascending_select=true,
@@ -74,7 +82,12 @@ function infer_models_using_mcmc(
     selectors = [Gen.select(:parameters => i => :value) for i in selector_indices]
 
     y_hot = BayesianNetworks.encode_labels(y, labels)
-    losses, accuracies = [], []
+
+    if !isnothing(val_X)
+        val_y_hot = BayesianNetworks.encode_labels(val_y, labels)
+    end
+
+    losses, val_losses, accuracies = [], [], []
     @showprogress for _ in 1:burnin_epochs
         for selector in selectors
             trace, _ = Gen.mh(trace, selector; check=true, observations=constraints)
@@ -83,6 +96,12 @@ function infer_models_using_mcmc(
         model = model_from_choices(N, reconstruct, trace)
         loss = criterion(model(X), y_hot)
         push!(losses, loss)
+
+        if !isnothing(val_X)
+            val_y_hat = model(val_X)
+            val_loss = criterion(val_y_hat, val_y_hot)
+            push!(val_losses, val_loss)
+        end
 
         y_pred = BayesianNetworks.predict(model, X, labels)
         accuracy = BayesianNetworks.accuracy(y, y_pred)
@@ -99,5 +118,5 @@ function infer_models_using_mcmc(
         push!(models, model)
     end
 
-    return models, losses, accuracies
+    return models, losses, val_losses, accuracies
 end
