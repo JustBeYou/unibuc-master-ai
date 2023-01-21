@@ -15,12 +15,12 @@ function encode_labels(y)
 end
 
 function make_network()
-    return Chain(
+    return fmap(f64, Chain(
         Dense(2 => 3, tanh),
         BatchNorm(3),
         Dense(3 => 2),
         softmax,
-    )
+    ))
 end
 
 function predict(model, X, device=cpu)
