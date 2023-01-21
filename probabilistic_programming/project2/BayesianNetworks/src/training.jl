@@ -12,23 +12,20 @@ function train_model_using_gd(
     dataloader = Flux.DataLoader((X, y) |> device, batchsize=batchsize, shuffle=true)
     optimizer = Flux.setup(optimizer, model)
 
-    losses, accuracies = [], []
+    losses = []
     @showprogress for _ in 1:epochs
         for (X_batch, y_batch) in dataloader
-            accuracy = 0
             loss, (gradients,) = Flux.withgradient(model) do m
                 y_batch_hat = m(X_batch)
-                accuracy = BayesianNetworks.accuracy(y_batch, y_batch_hat)
                 criterion(y_batch_hat, y_batch)
             end
 
             Flux.update!(optimizer, model, gradients)
             push!(losses, loss)
-            push!(accuracies, accuracy)
         end
     end
 
-    return model, losses, accuracies
+    return model, losses
 end
 
 @gen function single_parameter_apriori(miu, sigma)
@@ -76,6 +73,7 @@ function infer_models_using_mcmc(
     selector_indices = ascending_select ? (1:N) : (N:-1:1)
     selectors = [Gen.select(:parameters => i => :value) for i in selector_indices]
 
+    y_hot = BayesianNetworks.encode_labels(y, labels)
     losses, accuracies = [], []
     @showprogress for _ in 1:burnin_epochs
         for selector in selectors
@@ -83,13 +81,12 @@ function infer_models_using_mcmc(
         end
 
         model = model_from_choices(N, reconstruct, trace)
-        y_pred = BayesianNetworks.predict(model, X, labels)
+        loss = criterion(model(X), y_hot)
+        push!(losses, loss)
 
+        y_pred = BayesianNetworks.predict(model, X, labels)
         accuracy = BayesianNetworks.accuracy(y, y_pred)
         push!(accuracies, accuracy)
-
-        loss = criterion(y_pred, y)
-        push!(losses, loss)
     end
 
     models = []
