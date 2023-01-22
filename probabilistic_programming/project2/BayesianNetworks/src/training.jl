@@ -1,4 +1,4 @@
-using Flux, ProgressMeter
+using Flux, ProgressMeter, StatsBase
 
 function train_model_using_gd(
     model, X, y;
@@ -60,11 +60,35 @@ function model_from_choices(N, reconstruct, trace)
     return reconstruct(parameters)
 end
 
+function make_constraints(y)
+    constraints = Gen.choicemap()
+    for i in eachindex(y)
+        constraints[:y=>i] = y[i]
+    end
+    return constraints
+end
+
+function constrain_parameters(constraints, selector_indices, trace)
+    old_choices = get_choices(trace)
+    for i in selector_indices
+        constraints[:parameters=>i=>:value] = old_choices[:parameters=>i=>:value]
+    end
+    return constraints
+end
+
+function sample_batch(X, y, batchsize)
+    X_length = last(size(X))
+    batch_idx = StatsBase.sample(1:X_length, batchsize; replace=false)
+    batch_X, batch_y = X[:, batch_idx], y[batch_idx]
+    return batch_X, batch_y
+end
+
 function infer_models_using_mcmc(
     model, X, y, labels;
     val_X=nothing, val_y=nothing,
     miu=0.0, sigma=1.0,
-    burnin_epochs=50, inference_epochs=10,
+    batchsize=256,
+    burnin_epochs=100, inference_epochs=10,
     ascending_select=true,
     criterion=Flux.crossentropy
 )
@@ -72,16 +96,12 @@ function infer_models_using_mcmc(
     parameters_0, reconstruct = Flux.destructure(model)
     N = length(parameters_0)
 
-    constraints = Gen.choicemap()
-    for i in eachindex(y)
-        constraints[:y=>i] = y[i]
-    end
+    batch_X, batch_y = sample_batch(X, y, batchsize)
+    constraints = make_constraints(batch_y)
 
-    trace, _ = Gen.generate(network_parameters_apriori, (X, N, reconstruct, miu, sigma), constraints)
+    trace, _ = Gen.generate(network_parameters_apriori, (batch_X, N, reconstruct, miu, sigma), constraints)
     selector_indices = ascending_select ? (1:N) : (N:-1:1)
     selectors = [Gen.select(:parameters => i => :value) for i in selector_indices]
-
-    y_hot = BayesianNetworks.encode_labels(y, labels)
 
     if !isnothing(val_X)
         val_y_hot = BayesianNetworks.encode_labels(val_y, labels)
@@ -89,12 +109,18 @@ function infer_models_using_mcmc(
 
     losses, val_losses, accuracies = [], [], []
     @showprogress for _ in 1:burnin_epochs
+        batch_X, batch_y = sample_batch(X, y, batchsize)
+        constraints = make_constraints(batch_y)
+        constraints = constrain_parameters(constraints, selector_indices, trace)
+        trace, _ = Gen.generate(network_parameters_apriori, (batch_X, N, reconstruct, miu, sigma), constraints)
+
         for selector in selectors
-            trace, _ = Gen.mh(trace, selector; check=true, observations=constraints)
+            trace, _ = Gen.mh(trace, selector)
         end
 
+        batch_y_hot = BayesianNetworks.encode_labels(batch_y, labels)
         model = model_from_choices(N, reconstruct, trace)
-        loss = criterion(model(X), y_hot)
+        loss = criterion(model(batch_X), batch_y_hot)
         push!(losses, loss)
 
         if !isnothing(val_X)
@@ -103,15 +129,20 @@ function infer_models_using_mcmc(
             push!(val_losses, val_loss)
         end
 
-        y_pred = BayesianNetworks.predict(model, X, labels)
-        accuracy = BayesianNetworks.accuracy(y, y_pred)
+        y_pred = BayesianNetworks.predict(model, batch_X, labels)
+        accuracy = BayesianNetworks.accuracy(batch_y, y_pred)
         push!(accuracies, accuracy)
     end
 
     models = []
     @showprogress for _ in 1:inference_epochs
+        batch_X, batch_y = sample_batch(X, y, batchsize)
+        constraints = make_constraints(batch_y)
+        constraints = constrain_parameters(constraints, selector_indices, trace)
+        trace, _ = Gen.generate(network_parameters_apriori, (batch_X, N, reconstruct, miu, sigma), constraints)
+
         for selector in selectors
-            trace, _ = Gen.mh(trace, selector; check=true, observations=constraints)
+            trace, _ = Gen.mh(trace, selector)
         end
 
         model = model_from_choices(N, reconstruct, trace)

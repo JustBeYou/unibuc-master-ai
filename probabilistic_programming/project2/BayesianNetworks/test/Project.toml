@@ -1,2 +1,4 @@
 [deps]
+Gen = "ea4f424c-a589-11e8-07c0-fd5c91b9da4a"
+StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
