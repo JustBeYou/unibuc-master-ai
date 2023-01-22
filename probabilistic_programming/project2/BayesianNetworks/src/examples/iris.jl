@@ -1,11 +1,12 @@
-module HardMultiClassification
+module Iris
 
 using MLJBase, Flux
 
-function make_dataset(n)
-    X, y = MLJBase.make_blobs(n, 10; centers=10, cluster_std=[rand() * 5 for _ in 1:10], as_table=false)
-    # Flux requires the batch to be the last dimension
-    X = permutedims(X, [2, 1])
+function make_dataset()
+    X, y = MLJBase.@load_iris()
+    # We need a matrix as input
+    X = reduce(hcat, collect(X))'
+    y = map(yi -> labels_mapping[yi], y)
 
     N = last(size(X))
     idx, val_idx, test_idx = MLJBase.partition(1:N, 0.8, 0.1, shuffle=true, stratify=y)
@@ -17,13 +18,18 @@ function make_dataset(n)
     return train_X, val_X, test_X, train_y, val_y, test_y
 end
 
-const labels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+const labels_mapping = Dict(
+    "setosa" => 1,
+    "versicolor" => 2,
+    "virginica" => 3,
+)
+const labels = [1, 2, 3]
 
 function make_network()
     return Chain(
-        Dense(10 => 5, relu),
+        Dense(4 => 5, relu),
         BatchNorm(5),
-        Dense(5 => 10),
+        Dense(5 => 3),
         softmax,
     )
 end
