@@ -6,8 +6,10 @@ include("preprocessing.jl")
 include("training.jl")
 include("prediction.jl")
 include("metrics.jl")
-include("xor.jl")
-include("sanity_check.jl")
+include("examples/xor.jl")
+include("examples/sanity_check.jl")
+include("examples/hard_binary.jl")
+include("examples/hard_multi.jl")
 @load_generated_functions()
 
 end
