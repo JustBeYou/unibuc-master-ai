@@ -1,0 +1,15 @@
+rules([
+    [n(cough), n(infection), pneumonia],
+    [n(temperatureOver38), fever],
+    [n(musclePain), n(fever), flu],
+    [n(sickAtLeast2Days), n(fever), infection]
+]).
+
+questions([
+    ["Is the patient's temperature over 38 degrees?", temperatureOver38],
+    ["Was the patient sick for at least 2 days?", sickAtLeast2Days],
+    ["Has the patient muscle pain?", musclePain],
+    ["Has the patient cough?", cough]
+]).
+
+goal(pneumonia).
