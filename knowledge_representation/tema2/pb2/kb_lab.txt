@@ -1,0 +1,37 @@
+inputs([service, food]).
+output(tip, 0, 25, 0.01).
+
+rule(service/poor or food/rancid => tip/cheap).
+rule(service/good => tip/normal).
+rule(service/excellent or food/delicious => tip/generous).
+
+degree(service/poor, X, 0) :- (X < 0; X > 3), !.
+degree(service/poor, X, Y) :- lin(dec, 0, 3, X, Y), !.
+
+degree(service/good, X, 0) :- (X < 2; X > 8), !.
+degree(service/good, X, Y) :- lin(inc, 2, 4, X, Y), !.
+degree(service/good, X, 1) :- (X > 4, X < 7), !.
+degree(service/good, X, Y) :- lin(dec, 7, 8, X, Y), !.
+
+degree(service/excellent, X, 0) :- (X < 7; X > 10), !.
+degree(service/excellent, X, Y) :- lin(inc, 7, 9, X, Y), !.
+degree(service/excellent, X, 1) :- (X >= 9, X =< 10), !.
+
+degree(food/rancid, X, 0) :- (X < 4; X > 6), !.
+degree(food/rancid, X, Y) :- lin(dec, 4, 6, X, Y), !.
+
+degree(food/delicious, X, 0) :- (X < 6; X > 10), !.
+degree(food/delicious, X, Y) :- lin(inc, 6, 9, X, Y), !.
+degree(food/delicious, X, 1) :- (X >= 9, X =< 10), !.
+
+degree(tip/cheap, X, 0) :- (X < 0; X > 12.5), !.
+degree(tip/cheap, X, 1) :- (X >= 0, X < 5), !.
+degree(tip/cheap, X, Y) :- lin(dec, 5, 12.5, X, Y), !.
+
+degree(tip/normal, X, 0) :- (X < 8; X > 17), !.
+degree(tip/normal, X, Y) :- lin(inc, 8, 12.5, X, Y), !.
+degree(tip/normal, X, Y) :- lin(dec, 12.5, 17, X, Y), !.
+
+degree(tip/generous, X, 0) :- (X < 12.5; X > 25), !.
+degree(tip/generous, X, Y) :- lin(inc, 12.5, 23, X, Y), !.
+degree(tip/generous, X, 1) :- (X >= 23, X =< 25), !. 
