@@ -1,0 +1,18 @@
+rules([
+    [n(needHorizontalScale), n(needTeamAutonomy), useMicroservices],
+    [n(haveLargeMonolith), n(verticalScaleLimit), needHorizontalScale],
+    [n(haveLargeMonolith), n(overlappingTeams), needTeamAutonomy],
+    [n(costlyServers), n(resourcesAlwaysLow), verticalScaleLimit],
+    [n(needTeamAutonomy), n(needFasterDeployments), useMicroservices],
+    [n(rareReleases), needFasterDeployments]
+]).
+
+questions([
+    ["Do you have a large monolith project?", haveLargeMonolith],
+    ["Are your product releases rare?", rareReleases],
+    ["Do your teams have overlapping concerns for releases?", overlappingTeams],
+    ["Are you servers very costly?", costlyServers],
+    ["Are your servers always running low of resources?", resourcesAlwaysLow]
+]).
+
+goal(useMicroservices).

@@ -2,7 +2,7 @@ debug :- fail.
 
 :- initialization(main).
 main :- 
-    load_kb('kb_lab.txt', Rules, Questions, Goal),
+    load_kb('kb_my.txt', Rules, Questions, Goal),
     writeln("Rules: "), maplist(writeln, Rules), nl,
     write("Goal: "), writeln(Goal), nl,
     repeat,
