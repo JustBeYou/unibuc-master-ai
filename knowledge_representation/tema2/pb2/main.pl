@@ -22,23 +22,14 @@ main :-
     retractall(rating(_, _)), nl,
     fail.
 
-find_centroid(F, Left, Right, Delta, Centroid) :-
-    integrate(F, Left, Right, Delta, IntegralSum, MidXs, Areas),
-    midsum(Areas, _, _, IntegralSum, Delta, MidPoint),
-    length(Areas, AreasLength),
-    RevMidPoint is AreasLength - MidPoint - 1,
-    nth0(RevMidPoint,MidXs,Centroid).
+find_centroid(F, Left, Right, Delta, Result) :- 
+    integrate(x_f(F), Left, Right, Delta, Result_X_F),
+    integrate(F, Left, Right, Delta, Result_F),
+    Result is Result_X_F / Result_F.
 
-midsum([], 0, 0, _, _, _) :- !.
-midsum([H | T], S, I, KnownTotalSum, Delta, MidPoint) :- 
-    midsum(T, SR, J, KnownTotalSum, Delta, MidPoint),
-    I is J + 1,
-    S is H + SR,
-    R is KnownTotalSum / 2 + Delta,
-    L is KnownTotalSum / 2 - Delta,
-    ((S < R, S > L, MidPoint = I, !); true).
+x_f(F, X, Y) :- call(F, X, Y0), Y is X * Y0.
 
-integrate(F, Left, Right, Delta, Result, MidXs, Areas) :- 
+integrate(F, Left, Right, Delta, Result) :- 
     NewRight is Right - Delta,
     range(Left, Delta, NewRight, Xs),
     maplist(add_half(Delta), Xs, MidXs),
