@@ -1,0 +1,45 @@
+inputs([beer, study]).
+output(gpa, 0, 100, 0.01).
+
+rule(beer/high or study/low implies gpa/poor).
+rule(beer/low or study/enough implies gpa/ok).
+rule(beer/low and study/enough implies gpa/good).
+rule(beer/low and study/alot implies gpa/great).
+
+definition(beer, [low, high], 0, 31).
+definition(study, [low, enough, alot], 0, 16).
+definition(gpa, [poor, ok, good, great], 0, 100).
+
+degree(beer/low, X, 0) :- (X < 0; X > 8), !.
+degree(beer/low, X, Y) :- lin(dec, 0, 8, X, Y), !.
+
+degree(beer/high, X, 0) :- (X < 6; X > 31), !.
+degree(beer/high, X, Y) :- lin(inc, 6, 16, X, Y), !.
+degree(beer/high, X, 1) :- (X >= 16, X =< 31), !.
+
+degree(study/low, X, 0) :- (X < 0; X > 2), !.
+degree(study/low, X, Y) :- lin(dec, 0, 2, X, Y), !.
+
+degree(study/enough, X, 0) :- (X < 1; X > 14), !.
+degree(study/enough, X, Y) :- lin(inc, 1, 6, X, Y), !.
+degree(study/enough, X, 1) :- (X >= 6, X =< 14), !.
+
+degree(study/alot, X, 0) :- (X < 4; X > 14), !.
+degree(study/alot, X, Y) :- lin(inc, 4, 8, X, Y), !.
+degree(study/alot, X, 1) :- (X >= 8, X =< 12), !.
+degree(study/alot, X, Y) :- lin(dec, 12, 14, X, Y), !.
+
+degree(gpa/poor, X, 0) :- (X < 0; X > 70), !.
+degree(gpa/poor, X, 1) :- (X >= 0, X =< 50), !.
+degree(gpa/poor, X, Y) :- lin(dec, 50, 70, X, Y), !.
+
+degree(gpa/ok, X, 0) :- (X < 60; X > 80), !.
+degree(gpa/ok, X, Y) :- lin(inc, 60, 70, X, Y), !.
+degree(gpa/ok, X, Y) :- lin(dec, 70, 80, X, Y), !.
+
+degree(gpa/good, X, 0) :- (X < 70; X > 100), !.
+degree(gpa/good, X, Y) :- lin(inc, 70, 90, X, Y), !.
+degree(gpa/good, X, 1) :- (X >= 90, X =< 100), !.
+
+degree(gpa/great, X, 0) :- (X < 90; X > 100), !.
+degree(gpa/great, X, Y) :- lin(inc, 90, 100, X, Y), !.

@@ -1,9 +1,13 @@
 inputs([service, food]).
 output(tip, 0, 25, 0.01).
 
-rule(service/poor or food/rancid => tip/cheap).
-rule(service/good => tip/normal).
-rule(service/excellent or food/delicious => tip/generous).
+rule(service/poor or food/rancid implies tip/cheap).
+rule(service/good implies tip/normal).
+rule(service/excellent or food/delicious implies tip/generous).
+
+definition(service, [poor, good, excellent], 0, 10).
+definition(food, [rancid, delicious], 0, 10).
+definition(tip, [cheap, normal, generous], 0, 25).
 
 degree(service/poor, X, 0) :- (X < 0; X > 3), !.
 degree(service/poor, X, Y) :- lin(dec, 0, 3, X, Y), !.
