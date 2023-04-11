@@ -1,11 +1,11 @@
 import pickle
 from hashlib import sha256
-from os import path, mkdir
+from os import mkdir, path
 
 import nltk
+import pytictoc
 import wikipedia
 from nltk.tag.stanford import StanfordPOSTagger
-import pytictoc
 from tabulate import tabulate
 
 
@@ -118,6 +118,63 @@ def main():
               '#').ljust(20, ' '), str(str(count) + '/' + str(len(words))).rjust(15))
     print('=== === ===')
 
+
+    """
+    6. Create your own grammar with different terminal symbols. 
+    Apply recursive descent parsing on a sentence with at least 5 
+    different parts of speech and a tree of at least level 4.
+    """
+
+    print('=== Section 6 ===')
+    # https://www.ling.upenn.edu/courses/Fall_2003/ling001/penn_treebank_pos.html
+    grammar = nltk.CFG.fromstring("""
+        # Sentence
+        ROOT -> SUB PRED OBJS
+
+
+        # Groups of syntactic parts
+        SUB -> AT S | S
+        PRED -> AJ P | P AJ | P
+
+        OBJ -> CO | AT CO
+        OBJS -> OBJ |OBJ OBJ | OBJ CC OBJ | OBJ OBJ OBJ | OBJ OBJ CC OBJ | OBJ OBJ OBJ OBJ | OBJ OBJ OBJ CC OBJ | OBJ OBJ OBJ OBJ OBJ | OBJ OBJ OBJ OBJ CC OBJ
+
+        # Syntax of the sentence
+        AT -> JJ
+        S -> NN
+        P -> VB
+        CO -> NN
+        AJ -> RB
+
+        # Morphology
+        NN -> "methods" | "questioning" | "discussion" | "argument" | "philosophy" | "presentation"
+        JJ -> "Philosophical" | "critical" | "rational" | "systematic"
+        VB -> "include"
+        RB -> "carefully"
+        CC -> "and"
+    """)
+
+    sentence = "Philosophical methods include carefully questioning critical discussion rational argument and systematic presentation"
+    print(f"Apply RDP on {sentence}")
+    rdp = nltk.RecursiveDescentParser(grammar)
+    for tree in rdp.parse(sentence.split(" ")):
+        print(tree)
+    print('=== === ===')
+
+
+    """
+    7. Apply shift reduce parsing on the same sentence and check programatically if 
+    the two trees are equal. Find a sentence with equal trees and a sentence with different 
+    results (we consider the tree different even when it has no sollution for one of the 
+    parsers, but has for the other). 
+    """
+
+    print('=== Section 7 ===')
+    print(f"Apply SRP on {sentence}")
+    srp = nltk.ShiftReduceParser(grammar) 
+    for tree in srp.parse(sentence.split(" ")):
+        print(tree)
+    print('=== === ===')
 
 def cache(limit=None):
     if not path.isdir('.cache'):
