@@ -2,9 +2,9 @@ import pickle
 from hashlib import sha256
 from os import mkdir, path
 
+import numpy
 import spacy
 import wikipedia
-import numpy
 from sklearn.cluster import KMeans
 
 
