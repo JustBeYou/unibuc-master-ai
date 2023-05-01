@@ -1,9 +1,7 @@
 import dataclasses
 
 import numpy
-import cv2
-import imutils
-from typing import List, Optional
+from typing import List
 
 
 @dataclasses.dataclass

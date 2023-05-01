@@ -26,4 +26,6 @@ false positives la detectie
 - template matching pe un singur bullet pe toata imaginea => bulletul are prea putine features ca sa mearga template
 matchig-ul bine
 - template matching cu un domnio intreg => dominourile au prea putine features
-- hough lines per patch cu transformari morfologice => merge, 19_05 e stricata
+- hough circles per patch cu transformari morfologice => merge, 19_05 e stricata
+- dupa un pic de tunning, hough circles scoate corect toate true positives
+- findContour are rezultate proaste pentru gasit liniile mediene de pe domino
