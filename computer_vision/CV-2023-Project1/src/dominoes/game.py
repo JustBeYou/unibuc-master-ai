@@ -1,16 +1,17 @@
 import os
 from typing import List
 
-import cv2
+import numpy
 
-import annotation
+from vision import transforms
+from . import annotation
 
 
 class Game:
     def __init__(self, name: str, source_directory: str):
         self.name: str = name
-        self.images: List = []
-        self.annotations: List = []
+        self.images: List[numpy.ndarray] = []
+        self.annotations: List[annotation.Annotation] = []
         self.has_annotations: bool = False
         self.__load(source_directory)
 
@@ -30,7 +31,7 @@ class Game:
             if not os.path.exists(round_image) or not os.path.isfile(round_image):
                 break
 
-            self.images.append(cv2.imread(round_image))
+            self.images.append(transforms.grayscale(transforms.read(round_image)))
 
             if os.path.exists(round_annotations) and os.path.isfile(round_annotations):
                 self.has_annotations = True

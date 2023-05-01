@@ -2,12 +2,11 @@ import unittest
 
 import numpy
 
-import annotation
 import constants
-import game
+from dominoes import game, annotation
 
 
-class MyTestCase(unittest.TestCase):
+class GameTestCase(unittest.TestCase):
 
     def test_load_game(self):
         my_game = game.Game('1', constants.TRAIN_REGULAR_DIRECTORY)
