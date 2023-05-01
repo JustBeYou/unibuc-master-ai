@@ -3,10 +3,7 @@ import dataclasses
 import numpy
 import cv2
 import imutils
-from typing import List, Optional, Tuple
-from . import transforms
-
-import numpy as np
+from typing import List, Optional
 
 
 @dataclasses.dataclass
@@ -42,29 +39,6 @@ def grid_patches(image: numpy.ndarray, columns: int, rows: int, line_thickness: 
             patches.append(Patch(make_point(i, j), make_point(i + 1, j + 1), line_thickness, i, j))
 
     return patches
-
-
-def diffs(old_image: numpy.ndarray, new_image: numpy.ndarray, patches, threshold: int):
-    assert old_image.shape == new_image.shape
-    assert len(old_image.shape) == 2
-    differences = []
-    changed = []
-
-    old_image = transforms.blur_and_thresh(old_image)
-    new_image = transforms.blur_and_thresh(new_image)
-
-    for i, patch in enumerate(patches):
-        left_x, left_y = patch.top_left.as_tuple()
-        right_x, right_y = patch.bottom_right.as_tuple()
-        old_patch, new_patch = old_image[left_y:right_y, left_x:right_x], new_image[left_y:right_y, left_x:right_x]
-
-        diff = numpy.mean(np.abs(old_patch - new_patch))
-
-        differences.append(diff)
-        if diff > threshold:
-            changed.append(i)
-
-    return changed, differences
 
 
 def extract_nth_rectangle(image: numpy.ndarray, n: int, m: int) -> Optional[numpy.ndarray]:

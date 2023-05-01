@@ -23,27 +23,18 @@ class Settings:
     board_match_max_features: int
     board_match_percent: float
 
-    bullet_template_path: str
-    bullet_match_threshold: float
-
     board_line_thickness: int
     board_margin: int
 
-    patch_difference_threshold: int
 
 default = Settings(
     board_for_template_path=os.path.join(BOARDS_AND_DOMINOES_DIRECTORY, '01.jpg'),
     board_template_quadrilateral=numpy.array([[592, 1063], [2491, 1019], [2572, 2948], [629, 3020]],
                                              dtype=numpy.float32),
 
-    bullet_template_path=os.path.join(BOARDS_AND_DOMINOES_DIRECTORY, 'domino_3_1_template.png'),
-    bullet_match_threshold=0.9,
-
     board_match_max_features=2000,
     board_match_percent=0.15,
 
     board_line_thickness=5,
-    board_margin=13,
-
-    patch_difference_threshold=20,
+    board_margin=13
 )
