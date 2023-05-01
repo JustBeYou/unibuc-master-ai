@@ -39,7 +39,7 @@ def draw_patches(image: numpy.ndarray, patches_list: List[patches.Patch]) -> num
     return image
 
 
-def black_and_white(image: numpy.ndarray) -> numpy.ndarray:
+def filter_for_domino_circles(image: numpy.ndarray) -> numpy.ndarray:
     board = grayscale(image)
     blur = cv2.GaussianBlur(board, (3, 3), 0)
     _, thresh = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
@@ -51,8 +51,20 @@ def black_and_white(image: numpy.ndarray) -> numpy.ndarray:
     return eroded
 
 
+def filter_for_domino_mid_lines(image: numpy.ndarray) -> numpy.ndarray:
+    board = grayscale(image)
+    blur = cv2.GaussianBlur(board, (5, 5), 0)
+    edges = cv2.Canny(blur, 80, 160)
+    return edges
+
+
 def draw_circles(image: numpy.ndarray, circles) -> numpy.ndarray:
     image = image.copy()
     for (x, y, r) in circles:
         cv2.circle(image, (x, y), r, (0, 0, 255), -1)
     return image
+
+
+def draw_contours(image: numpy.ndarray, contours: List) -> numpy.ndarray:
+    image = image.copy()
+    return cv2.drawContours(image, contours, -1, (0, 0, 255), -1)

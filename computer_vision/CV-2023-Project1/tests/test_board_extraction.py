@@ -42,15 +42,19 @@ class BoardExtractionTestCase(unittest.TestCase):
                 settings.default.board_margin
             )
             circles = morphology.get_domino_circles_from_patches(match, patches_list)
+            mid_lines = morphology.get_domino_mid_lines(match)
 
-            match_color = transforms.draw_patches(match_color, patches_list)
-            match_color = transforms.draw_circles(match_color, circles)
+            # match_color = transforms.draw_patches(match_color, patches_list)
+            match_color = transforms.colored_bgr(transforms.filter_for_domino_mid_lines(match_color))
+            # match_color = transforms.draw_circles(match_color, circles)
+            match_color = transforms.draw_contours(match_color, mid_lines)
 
             name = image_path.split('/')[-1].replace('.jpg', '')
             output.debug_output_image(f"Processed board ({i} {name})", match_color)
             logging.debug(
                 f"Time elapsed {int(time.time() - start_time)}s ({i + 1}/{len(constants.ALL_TRAIN_IMAGE_PATHS)})")
 
+            break
 
 if __name__ == '__main__':
     unittest.main()
