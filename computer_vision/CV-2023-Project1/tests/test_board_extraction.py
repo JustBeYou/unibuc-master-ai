@@ -4,8 +4,7 @@ import unittest
 import constants
 import output
 from vision import templates, transforms, template_matcher, patches, morphology, extract
-from dominoes import board
-import settings
+from dominoes import board, settings
 import logging
 
 

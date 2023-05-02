@@ -30,6 +30,11 @@ class Annotation:
             int(lines[2].strip())
         )
 
+    def to_string(self):
+        return f"{self.first.row}{self.first.column} {self.first.value}\n" + \
+                f"{self.second.row}{self.second.column} {self.second.value}\n" + \
+                f"{self.score}\n"
+
     @staticmethod
     def from_raw_parts(parts, score):
         parts = sorted(parts, key=lambda elem: elem[:2])

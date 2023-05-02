@@ -1,10 +1,9 @@
 import dataclasses
-import pprint
 from typing import List
 
 import numpy
 
-from src import settings
+from dominoes import settings
 
 from vision import template_matcher, transforms, patches, morphology, extract
 

@@ -1,13 +1,11 @@
 import logging
 import os
-import pprint
 from typing import List
 
 import numpy
 
-import settings
 from vision import transforms, templates, template_matcher
-from . import annotation, board
+from . import annotation, board, settings
 
 
 class Game:
@@ -29,6 +27,7 @@ class Game:
             content = [line.strip() for line in content]
             content = [line for line in content if line != '']
             file_names = [line.split(' ')[0] for line in content]
+            self.prediction_names = [name.replace('.jpg', '.txt') for name in file_names]
             self.turns = [line.split(' ')[1] for line in content]
 
         for file_name in file_names:

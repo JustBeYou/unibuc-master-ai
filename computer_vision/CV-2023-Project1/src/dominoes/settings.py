@@ -3,7 +3,7 @@ import os
 
 import numpy
 
-ROOT_DIRECTORY = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..')
+ROOT_DIRECTORY = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../..')
 
 SRC_DIRECTORY = os.path.join(ROOT_DIRECTORY, 'src')
 TESTS_DIRECTORY = os.path.join(ROOT_DIRECTORY, 'tests')

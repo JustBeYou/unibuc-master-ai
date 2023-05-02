@@ -2,8 +2,7 @@ import typing
 
 import numpy
 
-from src import settings
-from dominoes import board
+from dominoes import board, settings
 from vision import transforms, templates, template_matcher
 
 
