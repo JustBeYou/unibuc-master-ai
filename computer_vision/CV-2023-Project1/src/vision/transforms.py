@@ -61,10 +61,10 @@ def filter_for_domino_mid_lines(image: numpy.ndarray) -> numpy.ndarray:
     return inverted
 
 
-def draw_circles(image: numpy.ndarray, circles) -> numpy.ndarray:
+def draw_circles(image: numpy.ndarray, circles, custom_color=(0,0,0)) -> numpy.ndarray:
     image = image.copy()
     for (x, y, r) in circles:
-        cv2.circle(image, (x, y), r, (0, 0, 0), -1)
+        cv2.circle(image, (x, y), r, custom_color, -1)
     return image
 
 

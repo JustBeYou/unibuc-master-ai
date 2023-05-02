@@ -3,7 +3,7 @@ import unittest
 
 import constants
 import output
-from vision import templates, transforms, template_matcher, patches, morphology
+from vision import templates, transforms, template_matcher, patches, morphology, extract
 from dominoes import board
 import settings
 import logging
@@ -50,7 +50,7 @@ class BoardExtractionTestCase(unittest.TestCase):
 
             filtered_mid_lines = morphology.filter_mid_lines(filtered_for_lines, mid_lines)
 
-            lines_in_grid = morphology.lines_to_grid(
+            lines_in_grid, horizontal_grid, vertical_grid = morphology.lines_to_grid(
                 filtered_mid_lines,
                 patches.patches_list_to_matrix(patches_list, board.BOARD_SIZE, board.BOARD_SIZE),
                 patch_x_size,
@@ -60,10 +60,11 @@ class BoardExtractionTestCase(unittest.TestCase):
                 board.BOARD_SIZE,
             )
 
-            match_color = transforms.colored_bgr(filtered_for_lines)
-            match_color = transforms.draw_patches(match_color, patches_list)
+            # match_color = transforms.draw_patches(match_color, patches_list)
             match_color = transforms.draw_contours(match_color, list(map(lambda elem: elem.contour, lines_in_grid)))
-            # match_color = transforms.draw_circles(match_color, circles)
+            # match_color = transforms.draw_circles(match_color, circles, custom_color=(0, 0, 255))
+
+            the_board = extract.create_board_from(horizontal_grid, vertical_grid, circles, board.BOARD_SIZE, board.BOARD_SIZE, match_color)
 
             name = image_path.split('/')[-1].replace('.jpg', '')
             output.debug_output_image(f"Processed board ({i} {name})", match_color)

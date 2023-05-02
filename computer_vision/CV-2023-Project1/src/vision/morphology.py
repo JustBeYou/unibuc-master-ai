@@ -207,11 +207,9 @@ def lines_to_grid(
         row = int((y_mean - margin_size) / patch_y_size)
 
         if row == rows:
-            horizontal_grid[rows - 1][column] = line
-            continue
+            row -= 1
         elif column == columns:
-            vertical_grid[row][columns - 1] = line
-            continue
+            column -= 1
 
         current_patch = patches[row][column]
 
@@ -255,4 +253,4 @@ def lines_to_grid(
     all_lines = [line for row in vertical_grid for line in row if line is not None] + \
                 [line for row in horizontal_grid for line in row if line is not None]
 
-    return all_lines
+    return all_lines, horizontal_grid, vertical_grid
