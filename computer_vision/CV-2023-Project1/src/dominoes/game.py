@@ -1,10 +1,12 @@
+import logging
 import os
 from typing import List
 
 import numpy
 
-from vision import transforms
-from . import annotation
+import settings
+from vision import transforms, templates, template_matcher
+from . import annotation, board
 
 
 class Game:
@@ -43,3 +45,47 @@ class Game:
 
         if self.has_annotations and len(self.images) != len(self.annotations):
             raise RuntimeError("Number of images is not the same as the number of annotation files.")
+
+    def extract_all_boards(self):
+        board_for_template = transforms.read(settings.default.board_for_template_path)
+        template_image = transforms.grayscale(
+            templates.create(
+                board_for_template,
+                settings.default.board_template_quadrilateral,
+                templates.TemplateType.SQUARE
+            )
+        )
+        matcher = template_matcher.TemplateMatcher(
+            template_image,
+            settings.default.board_match_max_features
+        )
+
+        all_boards = [board.Board.from_image(image, matcher) for image in self.images]
+        all_boards.insert(0, board.Board())
+        return all_boards
+
+    def annotate_rounds(self, boards: List[board.Board]):
+        annotations = []
+        for i in range(len(boards) - 1):
+            current_board = boards[i]
+            next_board = boards[i+1]
+            piece = current_board.diff_one_piece(next_board)
+
+            if len(piece) > 2:
+                logging.warning(f"Round {i+1} got too many diffs {piece}.")
+                break
+
+            annotations.append(annotation.Annotation.from_raw_parts(piece))
+
+        return annotations
+
+    def check_annotations(self, other_annotations):
+        good = 0
+        first_error = None
+        for my_annotation, other_annotation in zip(self.annotations, other_annotations):
+            if my_annotation.same_piece(other_annotation):
+                good += 1
+            else:
+                first_error = [my_annotation, other_annotation]
+                break
+        return good, first_error

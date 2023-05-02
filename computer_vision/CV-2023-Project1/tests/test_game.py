@@ -29,6 +29,15 @@ class GameTestCase(unittest.TestCase):
             6
         ))
 
+    def test_annotate_game(self):
+        self.skipTest("Too big")
+        for game_number in range(1, 6):
+            print(f"Game {game_number}")
+            my_game = game.Game(str(game_number), constants.TRAIN_REGULAR_DIRECTORY)
+            boards = my_game.extract_all_boards()
+            annotations = my_game.annotate_rounds(boards)
+            good_annotations, first_error = my_game.check_annotations(annotations)
+            print(good_annotations, first_error)
 
 if __name__ == '__main__':
     unittest.main()

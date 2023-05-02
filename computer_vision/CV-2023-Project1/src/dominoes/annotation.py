@@ -1,5 +1,7 @@
 import dataclasses
 
+from dominoes import board
+
 
 @dataclasses.dataclass
 class PiecePart:
@@ -27,3 +29,20 @@ class Annotation:
             PiecePart.from_string(lines[1]),
             int(lines[2].strip())
         )
+
+    @staticmethod
+    def from_raw_parts(parts):
+        parts = sorted(parts, key=lambda elem: elem[:2])
+        return Annotation(
+            PiecePart(parts[0][0] + 1, board.COLUMNS[parts[0][1]], parts[0][2]),
+            PiecePart(parts[1][0] + 1, board.COLUMNS[parts[1][1]], parts[1][2]),
+            0
+        )
+
+    def same_piece(self, annotation):
+        return self.first.row == annotation.first.row and \
+            self.first.column == annotation.first.column and \
+            self.first.value == annotation.first.value and \
+            self.second.row == annotation.second.row and \
+            self.second.column == annotation.second.column and \
+            self.second.value == annotation.second.value
