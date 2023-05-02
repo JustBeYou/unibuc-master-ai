@@ -31,18 +31,19 @@ class Annotation:
         )
 
     @staticmethod
-    def from_raw_parts(parts):
+    def from_raw_parts(parts, score):
         parts = sorted(parts, key=lambda elem: elem[:2])
         return Annotation(
             PiecePart(parts[0][0] + 1, board.COLUMNS[parts[0][1]], parts[0][2]),
             PiecePart(parts[1][0] + 1, board.COLUMNS[parts[1][1]], parts[1][2]),
-            0
+            score
         )
 
-    def same_piece(self, annotation):
+    def same(self, annotation):
         return self.first.row == annotation.first.row and \
             self.first.column == annotation.first.column and \
             self.first.value == annotation.first.value and \
             self.second.row == annotation.second.row and \
             self.second.column == annotation.second.column and \
-            self.second.value == annotation.second.value
+            self.second.value == annotation.second.value and \
+            self.score == annotation.score

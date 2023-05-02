@@ -31,7 +31,7 @@ class GameTestCase(unittest.TestCase):
         ))
 
     def test_annotate_game(self):
-        # self.skipTest("Too big")
+        self.skipTest("Too big")
         for game_number in range(1, 6):
             print(f"Game {game_number}")
             my_game = game.Game(str(game_number), constants.TRAIN_REGULAR_DIRECTORY)

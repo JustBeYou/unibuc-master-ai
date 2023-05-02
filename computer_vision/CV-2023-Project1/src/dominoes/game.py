@@ -14,6 +14,7 @@ class Game:
     def __init__(self, name: str, source_directory: str):
         self.name: str = name
         self.images: List[numpy.ndarray] = []
+        self.turns: List[str] = []
         self.annotations: List[annotation.Annotation] = []
         self.has_annotations: bool = False
         self.__load(source_directory)
@@ -23,16 +24,16 @@ class Game:
         if not os.path.isfile(moves_file):
             raise RuntimeError(f"Expected moves file {moves_file}, but not found.")
 
-        round_index = 1
-        while True:
-            round_index_str = str(round_index).rjust(2, '0')
-            file_prefix = os.path.join(source_directory, f"{self.name}_{round_index_str}")
+        with open(moves_file) as moves_file_object:
+            content = moves_file_object.read().split('\n')
+            content = [line.strip() for line in content]
+            content = [line for line in content if line != '']
+            file_names = [line.split(' ')[0] for line in content]
+            self.turns = [line.split(' ')[1] for line in content]
 
-            round_image = f"{file_prefix}.jpg"
-            round_annotations = f"{file_prefix}.txt"
-
-            if not os.path.exists(round_image) or not os.path.isfile(round_image):
-                break
+        for file_name in file_names:
+            round_image = os.path.join(source_directory, file_name)
+            round_annotations = round_image.replace('.jpg', '.txt')
 
             self.images.append(transforms.grayscale(transforms.read(round_image)))
 
@@ -41,8 +42,6 @@ class Game:
                 with open(round_annotations) as round_annotations_file:
                     content = round_annotations_file.read()
                 self.annotations.append(annotation.Annotation.from_string(content))
-
-            round_index += 1
 
         if self.has_annotations and len(self.images) != len(self.annotations):
             raise RuntimeError("Number of images is not the same as the number of annotation files.")
@@ -66,17 +65,41 @@ class Game:
         return all_boards
 
     def annotate_rounds(self, boards: List[board.Board]):
+        player_score = {}
+
+        for player in numpy.unique(self.turns):
+            player_score[player] = 0
+
         annotations = []
         for i in range(len(boards) - 1):
+            current_player = self.turns[i]
             current_board = boards[i]
             next_board = boards[i+1]
             piece = current_board.diff_one_piece(next_board)
+
+            new_score = board.DIAMONDS[piece[0][0]][piece[0][1]] + board.DIAMONDS[piece[1][0]][piece[1][1]]
+            double_domino = piece[0][2] == piece[1][2]
+            if double_domino:
+                new_score *= 2
+
+            for some_player, some_score in player_score.items():
+                if board.TRACK[some_score] == piece[0][2] or board.TRACK[some_score] == piece[1][2]:
+                    print(f"In round {i+1}, {some_player} received a bonus of 3 points.")
+
+                    if some_player == current_player:
+                        new_score += 3
+                    else:
+                        player_score[some_player] += 3
+
+            player_score[current_player] += new_score
+
+            print(f"Round {i+1} of {current_player} with move ({piece}) and added score {new_score}")
 
             if len(piece) != 2:
                 logging.warning(f"Round {i+1} got too many or too little diffs {piece}.")
                 break
 
-            annotations.append(annotation.Annotation.from_raw_parts(piece))
+            annotations.append(annotation.Annotation.from_raw_parts(piece, new_score))
 
         return annotations
 
@@ -90,7 +113,7 @@ class Game:
             # print("Right")
             # pprint.pprint(other_annotation)
 
-            if my_annotation.same_piece(other_annotation):
+            if my_annotation.same(other_annotation):
                 good += 1
             else:
                 first_error = [my_annotation, other_annotation]
