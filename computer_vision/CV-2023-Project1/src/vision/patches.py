@@ -36,7 +36,7 @@ def grid_patches(image: numpy.ndarray, columns: int, rows: int, line_thickness: 
         for j in range(rows):
             patches.append(Patch(make_point(i, j), make_point(i + 1, j + 1), line_thickness, i, j))
 
-    return patches, w_patch, h_patch
+    return patches, w_patch + line_thickness, h_patch + line_thickness
 
 def patches_list_to_matrix(patches_list: List[Patch], rows: int, columns: int) -> List[List[Patch]]:
     matrix = [[None for _ in range(columns)] for _ in range(rows)]

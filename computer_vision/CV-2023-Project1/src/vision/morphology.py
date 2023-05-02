@@ -225,8 +225,8 @@ def lines_to_grid(
         x_diff = line.max_x - line.min_x
         y_diff = line.max_y - line.min_y
 
-        y_mean = numpy.mean([line.min_y, line.max_y])
-        x_mean = numpy.mean([line.min_x, line.max_x])
+        y_mean = line.min_y + y_diff / 2
+        x_mean = line.min_x + x_diff / 2
 
         column = int((x_mean - margin_size) / patch_x_size)
         row = int((y_mean - margin_size) / patch_y_size)
@@ -259,6 +259,11 @@ def lines_to_grid(
             vertical_grid[row][column] = line
             # print('vertical', row, column)
 
+        # print(x_mean, y_mean, margin_size, patch_x_size, patch_y_size)
+
+
+    # print("###################")
+
     for column in range(columns):
         for row in range(rows-1):
             if horizontal_grid[row][column] and horizontal_grid[row+1][column]:
@@ -278,4 +283,5 @@ def lines_to_grid(
     all_lines = [line for row in vertical_grid for line in row if line is not None] + \
                 [line for row in horizontal_grid for line in row if line is not None]
 
+    # print('========================')
     return all_lines, horizontal_grid, vertical_grid

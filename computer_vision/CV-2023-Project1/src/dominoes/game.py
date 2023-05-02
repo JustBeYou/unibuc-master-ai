@@ -1,5 +1,6 @@
 import logging
 import os
+import pprint
 from typing import List
 
 import numpy
@@ -83,6 +84,12 @@ class Game:
         good = 0
         first_error = None
         for my_annotation, other_annotation in zip(self.annotations, other_annotations):
+            # print("Left")
+            # pprint.pprint(my_annotation)
+            #
+            # print("Right")
+            # pprint.pprint(other_annotation)
+
             if my_annotation.same_piece(other_annotation):
                 good += 1
             else:

@@ -1,3 +1,4 @@
+import pprint
 import unittest
 
 import numpy
@@ -37,7 +38,8 @@ class GameTestCase(unittest.TestCase):
             boards = my_game.extract_all_boards()
             annotations = my_game.annotate_rounds(boards)
             good_annotations, first_error = my_game.check_annotations(annotations)
-            print(good_annotations, first_error)
+            pprint.pprint(good_annotations)
+            pprint.pprint(first_error)
 
 if __name__ == '__main__':
     unittest.main()
