@@ -34,7 +34,7 @@ class BoardExtractionTestCase(unittest.TestCase):
             match = transforms.grayscale(match_color)
             self.assertEqual(match.shape, template_image.shape)
 
-            patches_list = patches.grid_patches(
+            patches_list, patch_x_size, patch_y_size = patches.grid_patches(
                 match,
                 board.BOARD_SIZE,
                 board.BOARD_SIZE,
@@ -47,12 +47,22 @@ class BoardExtractionTestCase(unittest.TestCase):
             filtered_for_lines = transforms.filter_for_domino_mid_lines(match_color)
             filtered_for_lines = transforms.draw_circles(filtered_for_lines, circles)
 
-            # match_color = transforms.draw_patches(match_color, patches_list)
 
-            filter_mid_lines = morphology.filter_mid_lines(filtered_for_lines, mid_lines)
+            filtered_mid_lines = morphology.filter_mid_lines(filtered_for_lines, mid_lines)
+
+            lines_in_grid = morphology.lines_to_grid(
+                filtered_mid_lines,
+                patches.patches_list_to_matrix(patches_list, board.BOARD_SIZE, board.BOARD_SIZE),
+                patch_x_size,
+                patch_y_size,
+                settings.default.board_margin,
+                board.BOARD_SIZE,
+                board.BOARD_SIZE,
+            )
 
             match_color = transforms.colored_bgr(filtered_for_lines)
-            match_color = transforms.draw_contours(match_color, filter_mid_lines)
+            match_color = transforms.draw_patches(match_color, patches_list)
+            match_color = transforms.draw_contours(match_color, list(map(lambda elem: elem.contour, lines_in_grid)))
             # match_color = transforms.draw_circles(match_color, circles)
 
             name = image_path.split('/')[-1].replace('.jpg', '')

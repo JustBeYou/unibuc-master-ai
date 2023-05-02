@@ -1,3 +1,7 @@
+import dataclasses
+import pprint
+import typing
+
 import cv2
 import numpy
 from typing import Optional, List
@@ -104,9 +108,17 @@ def get_domino_mid_lines(image: numpy.ndarray) -> List:
 
     return mid_lines
 
+@dataclasses.dataclass
+class MidLine:
+    contour: typing.Any
+    min_x: int
+    max_x: int
+    min_y: int
+    max_y: int
+
 DOMINO_HALF_SIZE = 50
 DOMINO_PADDING = 10
-def filter_mid_lines(image: numpy.ndarray, mid_lines):
+def filter_mid_lines(image: numpy.ndarray, mid_lines) -> List[MidLine]:
     filtered_mid_lines = []
 
     for mid_line in mid_lines:
@@ -164,6 +176,83 @@ def filter_mid_lines(image: numpy.ndarray, mid_lines):
         if top_mean > 10 or bottom_mean > 10:
             continue
 
-        filtered_mid_lines.append(mid_line)
+        filtered_mid_lines.append(MidLine(mid_line, min_x, max_x, min_y, max_y))
 
     return filtered_mid_lines
+
+LinesMatrix = typing.List[typing.List[typing.Optional[MidLine]]]
+
+def lines_to_grid(
+        lines: List[MidLine],
+        patches: List[List[patches.Patch]],
+        patch_x_size: int,
+        patch_y_size: int,
+        margin_size: int,
+        columns: int,
+        rows: int,
+):
+    lines = sorted(lines, key=lambda elem: (elem.min_x, elem.min_y))
+
+    vertical_grid: LinesMatrix = [[None for _ in range(columns)] for _ in range(rows)]
+    horizontal_grid: LinesMatrix = [[None for _ in range(columns)] for _ in range(rows)]
+
+    for line in lines:
+        x_diff = line.max_x - line.min_x
+        y_diff = line.max_y - line.min_y
+
+        y_mean = numpy.mean([line.min_y, line.max_y])
+        x_mean = numpy.mean([line.min_x, line.max_x])
+
+        column = int((x_mean - margin_size) / patch_x_size)
+        row = int((y_mean - margin_size) / patch_y_size)
+
+        if row == rows:
+            horizontal_grid[rows - 1][column] = line
+            continue
+        elif column == columns:
+            vertical_grid[row][columns - 1] = line
+            continue
+
+        current_patch = patches[row][column]
+
+        if x_diff > y_diff:
+            # horizontal
+            y_min = current_patch.top_left.y
+            y_max = current_patch.bottom_right.y
+
+            if numpy.abs(y_min - y_mean) < numpy.abs(y_max - y_mean):
+                row -= 1
+
+            horizontal_grid[row][column] = line
+            # print('horizontal', row, column)
+        else:
+            # vertical
+            x_min = current_patch.top_left.x
+            x_max = current_patch.bottom_right.x
+
+            if numpy.abs(x_min - x_mean) < numpy.abs(x_max - x_mean):
+                column -= 1
+
+            vertical_grid[row][column] = line
+            # print('vertical', row, column)
+
+    for column in range(columns):
+        for row in range(rows-1):
+            if horizontal_grid[row][column] and horizontal_grid[row+1][column]:
+                horizontal_grid[row + 1][column] = None
+
+            # if horizontal_grid[row][column]:
+            #     print('horizontal', row, column)
+
+    for row in range(rows):
+        for column in range(columns-1):
+            if vertical_grid[row][column] and vertical_grid[row][column+1]:
+                vertical_grid[row][column + 1] = None
+
+            # if vertical_grid[row][column]:
+            #     print('vertical', row, column)
+
+    all_lines = [line for row in vertical_grid for line in row if line is not None] + \
+                [line for row in horizontal_grid for line in row if line is not None]
+
+    return all_lines
