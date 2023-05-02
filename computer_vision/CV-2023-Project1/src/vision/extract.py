@@ -72,14 +72,20 @@ def create_board_from(horizontal_grid, vertical_grid, circles, rows, columns, im
 
                     circles[i] = None
                     board[row][column] += 1
+
+                    board[row][column] = min(board[row][column], 6)
                 elif point_in_rect(center, bottom_left_corner, bottom_right_corner):
                     cv2.circle(image, center, radius, (0, 0, 255), -1)
 
                     circles[i] = None
                     if is_horizontal:
                         board[row+1][column] += 1
+
+                        board[row+1][column] = min(board[row+1][column], 6)
                     else:
                         board[row][column+1] += 1
+
+                        board[row][column+1] = min(board[row][column+1], 6)
 
     return board, directions
 

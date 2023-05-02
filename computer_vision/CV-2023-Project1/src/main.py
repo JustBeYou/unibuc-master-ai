@@ -32,16 +32,19 @@ def main():
     print("Solving regular tasks")
     for game_name in game_names:
         print(f"Solving game {game_name}")
-        my_game = game.Game(game_name, regular_tasks_dir)
-        boards = my_game.extract_all_boards()
-        annotations = my_game.annotate_rounds(boards)
+        try:
+            my_game = game.Game(game_name, regular_tasks_dir)
+            boards = my_game.extract_all_boards()
+            annotations = my_game.annotate_rounds(boards)
 
-        for prediction_name, annotation in zip(my_game.prediction_names, annotations):
-            print(f"Writing output prediction to {prediction_name}")
-            output_path = os.path.join(args.output, 'regular_tasks', prediction_name)
-            with open(output_path, 'w') as f:
-                f.write(annotation.to_string())
-                f.flush()
+            for prediction_name, annotation in zip(my_game.prediction_names, annotations):
+                print(f"Writing output prediction to {prediction_name}")
+                output_path = os.path.join(args.output, 'regular_tasks', prediction_name)
+                with open(output_path, 'w') as f:
+                    f.write(annotation.to_string())
+                    f.flush()
+        except Exception as e:
+            print(f"Error while solving game {game_name}", e)
 
     bonus_task_dir = os.path.join(args.input, 'bonus_task')
     bonus_task_files = os.listdir(bonus_task_dir)
@@ -59,12 +62,15 @@ def main():
     results = solver.solve_images(input_labels, input_images)
 
     for label in results:
-        prediction_name = label.replace('.jpg', '.txt')
-        print(f"Writing output prediction to {prediction_name}")
-        output_path = os.path.join(args.output, 'bonus_task', prediction_name)
-        with open(output_path, 'w') as f:
-            f.write('\n'.join(results[label]) + '\n')
-            f.flush()
+        try:
+            prediction_name = label.replace('.jpg', '.txt')
+            print(f"Writing output prediction to {prediction_name}")
+            output_path = os.path.join(args.output, 'bonus_task', prediction_name)
+            with open(output_path, 'w') as f:
+                f.write('\n'.join(results[label]) + '\n')
+                f.flush()
+        except Exception as e:
+            print(f"Error while solving bonus task for {label}", e)
 
 if __name__ == "__main__":
     main()
