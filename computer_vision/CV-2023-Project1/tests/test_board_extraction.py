@@ -31,6 +31,7 @@ class BoardExtractionTestCase(unittest.TestCase):
             match_color = matcher.match(image, settings.default.board_match_percent)
             match = transforms.grayscale(match_color)
             self.assertEqual(match.shape, template_image.shape)
+            name = image_path.split('/')[-1].replace('.jpg', '')
 
             patches_list, patch_x_size, patch_y_size = patches.grid_patches(
                 match,
@@ -43,7 +44,10 @@ class BoardExtractionTestCase(unittest.TestCase):
             mid_lines = morphology.get_domino_mid_lines(match)
 
             filtered_for_lines = transforms.filter_for_domino_mid_lines(match_color)
+            if i % 10 == 0: output.debug_output_image(f"Prepared for detecting lines ({i} {name})", filtered_for_lines)
+
             filtered_for_lines = transforms.draw_circles(filtered_for_lines, circles)
+            if i % 10 == 0: output.debug_output_image(f"Filled dominoes with circles ({i} {name})", filtered_for_lines)
 
             filtered_mid_lines = morphology.filter_mid_lines(filtered_for_lines, mid_lines)
 
@@ -64,7 +68,6 @@ class BoardExtractionTestCase(unittest.TestCase):
             the_board, _ = extract.create_board_from(horizontal_grid, vertical_grid, circles, board.BOARD_SIZE,
                                                      board.BOARD_SIZE, match_color)
 
-            name = image_path.split('/')[-1].replace('.jpg', '')
             print(i, name, the_board)
             output.debug_output_image(f"Processed board ({i} {name})", match_color)
             logging.debug(
