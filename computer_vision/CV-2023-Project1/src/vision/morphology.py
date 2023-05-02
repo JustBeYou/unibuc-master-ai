@@ -126,7 +126,7 @@ def get_domino_mid_lines(image: numpy.ndarray) -> List:
         if ratio < 3:
             continue
 
-        if len(approx) > 5:
+        if len(approx) > 6:
             continue
 
         mid_lines.append(approx)
