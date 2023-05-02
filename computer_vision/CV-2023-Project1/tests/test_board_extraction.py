@@ -11,7 +11,6 @@ import logging
 
 class BoardExtractionTestCase(unittest.TestCase):
     def test_board_extraction(self):
-        #self.skipTest('Too big')
         board_for_template = transforms.read(settings.default.board_for_template_path)
         template_image = transforms.grayscale(
             templates.create(
@@ -64,7 +63,7 @@ class BoardExtractionTestCase(unittest.TestCase):
             match_color = transforms.draw_contours(match_color, list(map(lambda elem: elem.contour, lines_in_grid)))
             match_color = transforms.draw_circles(match_color, circles, custom_color=(0, 0, 255))
 
-            the_board = extract.create_board_from(horizontal_grid, vertical_grid, circles, board.BOARD_SIZE, board.BOARD_SIZE, match_color)
+            the_board, _ = extract.create_board_from(horizontal_grid, vertical_grid, circles, board.BOARD_SIZE, board.BOARD_SIZE, match_color)
 
             name = image_path.split('/')[-1].replace('.jpg', '')
             print(i, name, the_board)

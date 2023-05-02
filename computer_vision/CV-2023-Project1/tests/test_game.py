@@ -10,7 +10,6 @@ from dominoes import game, annotation
 class GameTestCase(unittest.TestCase):
 
     def test_load_game(self):
-        self.skipTest("Enable later")
         my_game = game.Game('1', constants.TRAIN_REGULAR_DIRECTORY)
 
         self.assertEqual(len(my_game.images), 20)
@@ -31,15 +30,28 @@ class GameTestCase(unittest.TestCase):
         ))
 
     def test_annotate_game(self):
-        self.skipTest("Too big")
         for game_number in range(1, 6):
-            print(f"Game {game_number}")
+            print(f"Train - Game {game_number}")
             my_game = game.Game(str(game_number), constants.TRAIN_REGULAR_DIRECTORY)
             boards = my_game.extract_all_boards()
             annotations = my_game.annotate_rounds(boards)
             good_annotations, first_error = my_game.check_annotations(annotations)
             pprint.pprint(good_annotations)
             pprint.pprint(first_error)
+            self.assertIsNone(first_error)
+            self.assertEqual(len(annotations), 20)
+
+    def test_evaluation_set(self):
+        for game_number in range(1, 2):
+            print(f"Evaluation - Game {game_number}")
+            my_game = game.Game(str(game_number), constants.EVALUATION_FAKE_TEST_REGULAR_DIRECTORY)
+            boards = my_game.extract_all_boards()
+            annotations = my_game.annotate_rounds(boards)
+            good_annotations, first_error = my_game.check_annotations(annotations)
+            pprint.pprint(good_annotations)
+            pprint.pprint(first_error)
+            self.assertIsNone(first_error)
+            self.assertEqual(len(annotations), 20)
 
 if __name__ == '__main__':
     unittest.main()

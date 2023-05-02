@@ -1,4 +1,5 @@
 import dataclasses
+import pprint
 from typing import List
 
 import numpy
@@ -69,12 +70,17 @@ class Board:
     Rows from 1 to 15, columns from A to O and values from 0 to 6.
     """
     __board: List[List[int]]
+    __directions: List[List[str]]
 
-    def __init__(self, custom_board=None):
+    def __init__(self, custom_board=None, directions=None):
         if custom_board is None:
             self.__board = [[EMPTY for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]
         else:
             self.__board = custom_board
+        self.__directions = directions
+
+    def to_array(self):
+        return (self.__board, self.__directions)
 
     @staticmethod
     def from_image(image: numpy.ndarray, matcher: template_matcher.TemplateMatcher):
@@ -108,12 +114,12 @@ class Board:
             BOARD_SIZE,
         )
 
-        the_board = extract.create_board_from(
+        the_board, directions = extract.create_board_from(
             horizontal_grid, vertical_grid, circles, BOARD_SIZE,
             BOARD_SIZE, match_color
         )
 
-        return Board(the_board)
+        return Board(the_board, directions=directions)
 
     def __getitem__(self, item):
         return self.__board[item]

@@ -3,11 +3,13 @@ import numpy
 
 
 DOMINO_HALF_SIZE = 115
-DOMINO_ADDITIONAL_WIDTH = 15
+DOMINO_ADDITIONAL_WIDTH = 1
 DOMINO_PADDING = 3
 
 def create_board_from(horizontal_grid, vertical_grid, circles, rows, columns, image):
     board = [[-1 for _ in range(columns)] for _ in range(rows)]
+    directions = [['' for _ in range(columns)] for _ in range(rows)]
+
     circles = circles.copy()
 
     for row in range(rows):
@@ -49,8 +51,14 @@ def create_board_from(horizontal_grid, vertical_grid, circles, rows, columns, im
             cv2.rectangle(image, bottom_left_corner, bottom_right_corner, (128, 128, 128), 3)
 
             if is_horizontal:
+                directions[row][column] = 'down'
+                directions[row+1][column] = 'up'
+
                 board[row][column] = board[row+1][column] = 0
             else:
+                directions[row][column] = 'right'
+                directions[row][column+1] = 'left'
+
                 board[row][column] = board[row][column+1] = 0
 
             for i, circle in enumerate(circles):
@@ -73,7 +81,7 @@ def create_board_from(horizontal_grid, vertical_grid, circles, rows, columns, im
                     else:
                         board[row][column+1] += 1
 
-    return board
+    return board, directions
 
 
 def point_in_rect(point, left_corner, right_corner) -> bool:
