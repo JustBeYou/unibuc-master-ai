@@ -60,13 +60,14 @@ class BoardExtractionTestCase(unittest.TestCase):
                 board.BOARD_SIZE,
             )
 
-            # match_color = transforms.draw_patches(match_color, patches_list)
+            match_color = transforms.draw_patches(match_color, patches_list)
             match_color = transforms.draw_contours(match_color, list(map(lambda elem: elem.contour, lines_in_grid)))
-            # match_color = transforms.draw_circles(match_color, circles, custom_color=(0, 0, 255))
+            match_color = transforms.draw_circles(match_color, circles, custom_color=(0, 0, 255))
 
             the_board = extract.create_board_from(horizontal_grid, vertical_grid, circles, board.BOARD_SIZE, board.BOARD_SIZE, match_color)
 
             name = image_path.split('/')[-1].replace('.jpg', '')
+            print(i, name, the_board)
             output.debug_output_image(f"Processed board ({i} {name})", match_color)
             logging.debug(
                 f"Time elapsed {int(time.time() - start_time)}s ({i + 1}/{len(constants.ALL_TRAIN_IMAGE_PATHS)})")

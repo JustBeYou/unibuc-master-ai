@@ -15,6 +15,31 @@ def get_domino_circles(image: numpy.ndarray) -> Optional[numpy.ndarray]:
         minRadius=10, maxRadius=20
     )
 
+def should_merge_circles(x1, y1, r1, x2, y2, r2):
+    d = numpy.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
+    if d <= r1 - r2:
+        return True
+    elif d <= r2 - r1:
+        return True
+    elif d < r1 + r2 and r1+r2 - d > 10:
+        return True
+    elif d == r1 + r2:
+        return False
+    else:
+        return False
+
+
+def remove_overlapping_circles(circles):
+    for i in range(len(circles)):
+        for j in range(len(circles)):
+            if i == j: continue
+            if circles[i] is None: continue
+            if circles[j] is None: continue
+
+            if should_merge_circles(*circles[i], *circles[j]):
+                circles[j] = None
+
+    return [circle for circle in circles if circle is not None]
 
 PATCH_PADDING = 12
 
@@ -43,7 +68,7 @@ def get_domino_circles_from_patches(image: numpy.ndarray, patches_list: List[pat
 
         all_circles.extend(circles)
 
-    return all_circles
+    return remove_overlapping_circles(all_circles)
 
 def get_domino_mid_lines_from_patches(image: numpy.ndarray, patches_list: List[patches.Patch]):
     filtered_image = transforms.filter_for_domino_mid_lines(image)

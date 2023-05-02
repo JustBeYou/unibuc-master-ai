@@ -71,8 +71,8 @@ class Game:
             next_board = boards[i+1]
             piece = current_board.diff_one_piece(next_board)
 
-            if len(piece) > 2:
-                logging.warning(f"Round {i+1} got too many diffs {piece}.")
+            if len(piece) != 2:
+                logging.warning(f"Round {i+1} got too many or too little diffs {piece}.")
                 break
 
             annotations.append(annotation.Annotation.from_raw_parts(piece))
