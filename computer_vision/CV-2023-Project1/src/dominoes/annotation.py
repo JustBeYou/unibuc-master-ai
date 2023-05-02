@@ -32,8 +32,8 @@ class Annotation:
 
     def to_string(self):
         return f"{self.first.row}{self.first.column} {self.first.value}\n" + \
-                f"{self.second.row}{self.second.column} {self.second.value}\n" + \
-                f"{self.score}\n"
+            f"{self.second.row}{self.second.column} {self.second.value}\n" + \
+            f"{self.score}\n"
 
     @staticmethod
     def from_raw_parts(parts, score):

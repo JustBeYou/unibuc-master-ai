@@ -73,7 +73,7 @@ class Game:
         for i in range(len(boards) - 1):
             current_player = self.turns[i]
             current_board = boards[i]
-            next_board = boards[i+1]
+            next_board = boards[i + 1]
             piece = current_board.diff_one_piece(next_board)
 
             new_score = board.DIAMONDS[piece[0][0]][piece[0][1]] + board.DIAMONDS[piece[1][0]][piece[1][1]]
@@ -83,7 +83,7 @@ class Game:
 
             for some_player, some_score in player_score.items():
                 if board.TRACK[some_score] == piece[0][2] or board.TRACK[some_score] == piece[1][2]:
-                    print(f"In round {i+1}, {some_player} received a bonus of 3 points.")
+                    print(f"In round {i + 1}, {some_player} received a bonus of 3 points.")
 
                     if some_player == current_player:
                         new_score += 3
@@ -92,10 +92,10 @@ class Game:
 
             player_score[current_player] += new_score
 
-            print(f"Round {i+1} of {current_player} with move ({piece}) and added score {new_score}")
+            print(f"Round {i + 1} of {current_player} with move ({piece}) and added score {new_score}")
 
             if len(piece) != 2:
-                logging.warning(f"Round {i+1} got too many or too little diffs {piece}.")
+                logging.warning(f"Round {i + 1} got too many or too little diffs {piece}.")
                 break
 
             annotations.append(annotation.Annotation.from_raw_parts(piece, new_score))

@@ -1,10 +1,9 @@
 import cv2
-import numpy
-
 
 DOMINO_HALF_SIZE = 115
 DOMINO_ADDITIONAL_WIDTH = 1
 DOMINO_PADDING = 3
+
 
 def create_board_from(horizontal_grid, vertical_grid, circles, rows, columns, image):
     board = [[-1 for _ in range(columns)] for _ in range(rows)]
@@ -25,11 +24,13 @@ def create_board_from(horizontal_grid, vertical_grid, circles, rows, columns, im
                 max_x = mid_line.max_x
                 max_y = mid_line.max_y
 
-                top_left_corner = (max(min_x - DOMINO_ADDITIONAL_WIDTH, 0), max(min_y - DOMINO_HALF_SIZE - DOMINO_PADDING, 0))
+                top_left_corner = (
+                    max(min_x - DOMINO_ADDITIONAL_WIDTH, 0), max(min_y - DOMINO_HALF_SIZE - DOMINO_PADDING, 0))
                 top_right_corner = (min(max_x + DOMINO_ADDITIONAL_WIDTH, image.shape[0] - 1), min_y - DOMINO_PADDING)
 
                 bottom_left_corner = (max(min_x - DOMINO_ADDITIONAL_WIDTH, 0), max_y + DOMINO_PADDING)
-                bottom_right_corner = (min(max_x + DOMINO_ADDITIONAL_WIDTH, image.shape[0] - 1), min(max_y + DOMINO_HALF_SIZE + DOMINO_PADDING, image.shape[1] - 1))
+                bottom_right_corner = (min(max_x + DOMINO_ADDITIONAL_WIDTH, image.shape[0] - 1),
+                                       min(max_y + DOMINO_HALF_SIZE + DOMINO_PADDING, image.shape[1] - 1))
             elif vertical_grid[row][column] is not None:
 
                 mid_line = vertical_grid[row][column]
@@ -39,11 +40,13 @@ def create_board_from(horizontal_grid, vertical_grid, circles, rows, columns, im
                 max_x = mid_line.max_x
                 max_y = mid_line.max_y
 
-                top_left_corner = (max(min_x - DOMINO_HALF_SIZE - DOMINO_PADDING, 0), max(min_y - DOMINO_ADDITIONAL_WIDTH, 0))
-                top_right_corner = (min_x - DOMINO_PADDING, min(max_y + DOMINO_ADDITIONAL_WIDTH, image.shape[1] -1))
+                top_left_corner = (
+                    max(min_x - DOMINO_HALF_SIZE - DOMINO_PADDING, 0), max(min_y - DOMINO_ADDITIONAL_WIDTH, 0))
+                top_right_corner = (min_x - DOMINO_PADDING, min(max_y + DOMINO_ADDITIONAL_WIDTH, image.shape[1] - 1))
 
                 bottom_left_corner = (max_x + DOMINO_PADDING, max(min_y - DOMINO_ADDITIONAL_WIDTH, 0))
-                bottom_right_corner = (min(max_x + DOMINO_HALF_SIZE + DOMINO_PADDING, image.shape[0] - 1), min(max_y + DOMINO_ADDITIONAL_WIDTH, image.shape[1] - 1))
+                bottom_right_corner = (min(max_x + DOMINO_HALF_SIZE + DOMINO_PADDING, image.shape[0] - 1),
+                                       min(max_y + DOMINO_ADDITIONAL_WIDTH, image.shape[1] - 1))
             else:
                 continue
 
@@ -52,14 +55,14 @@ def create_board_from(horizontal_grid, vertical_grid, circles, rows, columns, im
 
             if is_horizontal:
                 directions[row][column] = 'down'
-                directions[row+1][column] = 'up'
+                directions[row + 1][column] = 'up'
 
-                board[row][column] = board[row+1][column] = 0
+                board[row][column] = board[row + 1][column] = 0
             else:
                 directions[row][column] = 'right'
-                directions[row][column+1] = 'left'
+                directions[row][column + 1] = 'left'
 
-                board[row][column] = board[row][column+1] = 0
+                board[row][column] = board[row][column + 1] = 0
 
             for i, circle in enumerate(circles):
                 if circle is None:
@@ -79,13 +82,13 @@ def create_board_from(horizontal_grid, vertical_grid, circles, rows, columns, im
 
                     circles[i] = None
                     if is_horizontal:
-                        board[row+1][column] += 1
+                        board[row + 1][column] += 1
 
-                        board[row+1][column] = min(board[row+1][column], 6)
+                        board[row + 1][column] = min(board[row + 1][column], 6)
                     else:
-                        board[row][column+1] += 1
+                        board[row][column + 1] += 1
 
-                        board[row][column+1] = min(board[row][column+1], 6)
+                        board[row][column + 1] = min(board[row][column + 1], 6)
 
     return board, directions
 

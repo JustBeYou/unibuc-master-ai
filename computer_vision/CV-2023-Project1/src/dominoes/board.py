@@ -4,7 +4,6 @@ from typing import List
 import numpy
 
 from dominoes import settings
-
 from vision import template_matcher, transforms, patches, morphology, extract
 
 EMPTY = -1
@@ -55,12 +54,13 @@ TRACK = [
 assert len(TRACK) == 101
 
 uniq_diamonds, diamonds_counts = numpy.unique([value for row in DIAMONDS for value in row], return_counts=True)
-assert sum(diamonds_counts) == 15*15
+assert sum(diamonds_counts) == 15 * 15
 assert diamonds_counts[1] == 16
 assert diamonds_counts[2] == 16
 assert diamonds_counts[3] == 16
 assert diamonds_counts[4] == 16
 assert diamonds_counts[5] == 4
+
 
 @dataclasses.dataclass
 class Board:
@@ -125,7 +125,7 @@ class Board:
 
     @staticmethod
     def name(i, j):
-        return f"{i+1}{COLUMNS[j]}"
+        return f"{i + 1}{COLUMNS[j]}"
 
     def diff_one_piece(self, other_board):
         diff_piece = []

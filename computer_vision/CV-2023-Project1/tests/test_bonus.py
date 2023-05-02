@@ -1,5 +1,4 @@
 import os
-import pprint
 import unittest
 
 import cv2
@@ -37,6 +36,7 @@ class GameTestCase(unittest.TestCase):
         for label, annotation in annotations:
             print(label, results[label], annotation.split('\n'))
             self.assertListEqual(results[label], [x.strip() for x in annotation.split('\n')])
+
 
 if __name__ == '__main__':
     unittest.main()

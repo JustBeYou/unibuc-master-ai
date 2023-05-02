@@ -53,5 +53,6 @@ class GameTestCase(unittest.TestCase):
             self.assertIsNone(first_error)
             self.assertEqual(len(annotations), 20)
 
+
 if __name__ == '__main__':
     unittest.main()

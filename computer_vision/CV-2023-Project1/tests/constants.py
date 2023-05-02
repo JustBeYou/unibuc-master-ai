@@ -13,7 +13,6 @@ TRAIN_BONUS_DIRECTORY = os.path.join(DATA_DIRECTORY, 'train', 'bonus_task')
 EVALUATION_FAKE_TEST_REGULAR_DIRECTORY = os.path.join(DATA_DIRECTORY, 'evaluation', 'fake_test', 'regular_tasks')
 EVALUATION_FAKE_TEST_BONUS_DIRECTORY = os.path.join(DATA_DIRECTORY, 'evaluation', 'fake_test', 'bonus_task')
 
-
 TEST_OUTPUTS_DIRECTORY = os.path.join(DATA_DIRECTORY, 'test_outputs')
 
 BOARDS_AND_DOMINOES_DIRECTORY = os.path.join(DATA_DIRECTORY, 'board+dominoes')

@@ -1,8 +1,9 @@
 import dataclasses
 import typing
+from typing import List
 
 import numpy
-from typing import List
+
 
 @dataclasses.dataclass
 class Point:
@@ -22,7 +23,8 @@ class Patch:
     y: int
 
 
-def grid_patches(image: numpy.ndarray, columns: int, rows: int, line_thickness: int, margin: int) -> typing.Tuple[List[Patch], int, int]:
+def grid_patches(image: numpy.ndarray, columns: int, rows: int, line_thickness: int, margin: int) -> typing.Tuple[
+    List[Patch], int, int]:
     w, h = image.shape[0], image.shape[1]
     vertical_lines, horizontal_lines = columns - 1, rows - 1
 
@@ -37,6 +39,7 @@ def grid_patches(image: numpy.ndarray, columns: int, rows: int, line_thickness: 
             patches.append(Patch(make_point(i, j), make_point(i + 1, j + 1), line_thickness, i, j))
 
     return patches, w_patch + line_thickness, h_patch + line_thickness
+
 
 def patches_list_to_matrix(patches_list: List[Patch], rows: int, columns: int) -> List[List[Patch]]:
     matrix = [[None for _ in range(columns)] for _ in range(rows)]

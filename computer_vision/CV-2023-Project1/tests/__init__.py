@@ -1,7 +1,8 @@
+import logging
 import os
 import sys
+
 from . import constants
-import logging
 
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
 

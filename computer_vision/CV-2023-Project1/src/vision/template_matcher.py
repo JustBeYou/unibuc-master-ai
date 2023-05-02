@@ -1,5 +1,6 @@
 import cv2
 import numpy
+
 from . import transforms
 
 
@@ -9,6 +10,10 @@ class TemplateMatcher:
         self.orb = cv2.ORB_create(max_features)
 
     def match(self, target_image: numpy.ndarray, match_percent: float) -> numpy.ndarray:
+        """
+        Feature-based template matching, inspired by OpenCV documentation:
+        https://docs.opencv.org/4.x/dc/dc3/tutorial_py_matcher.html
+        """
         target_image_color = target_image
         target_image = transforms.grayscale(target_image)
 

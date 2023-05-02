@@ -1,10 +1,10 @@
 import dataclasses
-import pprint
 import typing
+from typing import Optional, List
 
 import cv2
 import numpy
-from typing import Optional, List
+
 from . import transforms, patches
 
 
@@ -15,13 +15,14 @@ def get_domino_circles(image: numpy.ndarray) -> Optional[numpy.ndarray]:
         minRadius=10, maxRadius=20
     )
 
+
 def should_merge_circles(x1, y1, r1, x2, y2, r2):
     d = numpy.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
     if d <= r1 - r2:
         return True
     elif d <= r2 - r1:
         return True
-    elif d < r1 + r2 and r1+r2 - d > 10:
+    elif d < r1 + r2 and r1 + r2 - d > 10:
         return True
     elif d == r1 + r2:
         return False
@@ -40,6 +41,7 @@ def remove_overlapping_circles(circles):
                 circles[j] = None
 
     return [circle for circle in circles if circle is not None]
+
 
 PATCH_PADDING = 12
 
@@ -70,28 +72,7 @@ def get_domino_circles_from_patches(image: numpy.ndarray, patches_list: List[pat
 
     return remove_overlapping_circles(all_circles)
 
-def get_domino_mid_lines_from_patches(image: numpy.ndarray, patches_list: List[patches.Patch]):
-    filtered_image = transforms.filter_for_domino_mid_lines(image)
-    all_mid_lines = []
 
-    for patch in patches_list:
-        left_x, left_y = patch.top_left.as_tuple()
-        right_x, right_y = patch.bottom_right.as_tuple()
-
-        left_y -= PATCH_PADDING + 2
-        left_x -= PATCH_PADDING + 2
-        right_x += PATCH_PADDING + 2
-        right_y += PATCH_PADDING + 2
-
-        patch_image = filtered_image[left_y: right_y, left_x: right_x]
-        contours = get_domino_mid_lines(patch_image)
-
-        for contour in contours:
-            contour[:, 0, 0] += left_x
-            contour[:, 0, 1] += left_y
-            all_mid_lines.append(contour)
-
-    return all_mid_lines
 def get_domino_mid_lines(image: numpy.ndarray) -> List:
     """
     Returns the n-th polygon with m sides from a given image. Inspired by
@@ -133,6 +114,7 @@ def get_domino_mid_lines(image: numpy.ndarray) -> List:
 
     return mid_lines
 
+
 @dataclasses.dataclass
 class MidLine:
     contour: typing.Any
@@ -141,8 +123,11 @@ class MidLine:
     min_y: int
     max_y: int
 
+
 DOMINO_HALF_SIZE = 50
 DOMINO_PADDING = 10
+
+
 def filter_mid_lines(image: numpy.ndarray, mid_lines) -> List[MidLine]:
     filtered_mid_lines = []
 
@@ -156,24 +141,22 @@ def filter_mid_lines(image: numpy.ndarray, mid_lines) -> List[MidLine]:
         y_diff = max_y - min_y
 
         if x_diff > y_diff:
-            top_left_corner = (min_x,  max(min_y - DOMINO_HALF_SIZE - DOMINO_PADDING, 0))
+            top_left_corner = (min_x, max(min_y - DOMINO_HALF_SIZE - DOMINO_PADDING, 0))
             top_right_corner = (max_x, min_y - DOMINO_PADDING)
 
             bottom_left_corner = (min_x, max_y + DOMINO_PADDING)
-            bottom_right_corner = (max_x, min(max_y + DOMINO_HALF_SIZE + DOMINO_PADDING, image.shape[1]-1))
+            bottom_right_corner = (max_x, min(max_y + DOMINO_HALF_SIZE + DOMINO_PADDING, image.shape[1] - 1))
         else:
             top_left_corner = (max(min_x - DOMINO_HALF_SIZE - DOMINO_PADDING, 0), min_y)
             top_right_corner = (min_x - DOMINO_PADDING, max_y)
 
             bottom_left_corner = (max_x + DOMINO_PADDING, min_y)
-            bottom_right_corner = (min(max_x + DOMINO_HALF_SIZE + DOMINO_PADDING, image.shape[0]-1), max_y)
-
-
+            bottom_right_corner = (min(max_x + DOMINO_HALF_SIZE + DOMINO_PADDING, image.shape[0] - 1), max_y)
 
         top_region = image[
-              top_left_corner[1]:top_right_corner[1],
-              top_left_corner[0]:top_right_corner[0]
-        ]
+                     top_left_corner[1]:top_right_corner[1],
+                     top_left_corner[0]:top_right_corner[0]
+                     ]
         if top_region.shape[0] == 0 or top_region.shape[1] == 0:
             continue
 
@@ -183,11 +166,10 @@ def filter_mid_lines(image: numpy.ndarray, mid_lines) -> List[MidLine]:
         if top_mean == numpy.nan:
             continue
 
-
         bottom_region = image[
-                                 bottom_left_corner[1]:bottom_right_corner[1],
-                                 bottom_left_corner[0]:bottom_right_corner[0]
-                                 ]
+                        bottom_left_corner[1]:bottom_right_corner[1],
+                        bottom_left_corner[0]:bottom_right_corner[0]
+                        ]
 
         if bottom_region.shape[0] == 0 or bottom_region.shape[1] == 0:
             continue
@@ -205,7 +187,9 @@ def filter_mid_lines(image: numpy.ndarray, mid_lines) -> List[MidLine]:
 
     return filtered_mid_lines
 
+
 LinesMatrix = typing.List[typing.List[typing.Optional[MidLine]]]
+
 
 def lines_to_grid(
         lines: List[MidLine],
@@ -231,10 +215,10 @@ def lines_to_grid(
         column = int((x_mean - margin_size) / patch_x_size)
         row = int((y_mean - margin_size) / patch_y_size)
 
-        if row == rows:
-            row -= 1
-        elif column == columns:
-            column -= 1
+        if row >= rows:
+            row = rows - 1
+        elif column >= columns:
+            column = columns - 1
 
         current_patch = patches[row][column]
 
@@ -261,20 +245,19 @@ def lines_to_grid(
 
         # print(x_mean, y_mean, margin_size, patch_x_size, patch_y_size)
 
-
     # print("###################")
 
     for column in range(columns):
-        for row in range(rows-1):
-            if horizontal_grid[row][column] and horizontal_grid[row+1][column]:
+        for row in range(rows - 1):
+            if horizontal_grid[row][column] and horizontal_grid[row + 1][column]:
                 horizontal_grid[row + 1][column] = None
 
             # if horizontal_grid[row][column]:
             #     print('horizontal', row, column)
 
     for row in range(rows):
-        for column in range(columns-1):
-            if vertical_grid[row][column] and vertical_grid[row][column+1]:
+        for column in range(columns - 1):
+            if vertical_grid[row][column] and vertical_grid[row][column + 1]:
                 vertical_grid[row][column + 1] = None
 
             # if vertical_grid[row][column]:

@@ -10,10 +10,15 @@ from dominoes import game, bonus
 # python src/main.py --template ./src/best_board.jpg --input ./data/fake_test_inputs/ --output ./data/fake_test_results/
 # python src/evaluate_submission.py --results ./data/fake_test_results/ --truth ./data/fake_test_truth/
 
+ROOT_DIRECTORY = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..')
+BEST_TEMPLATE = os.path.join(ROOT_DIRECTORY, 'src', 'best_board.jpg')
+
 def main():
     args = argparse.ArgumentParser()
-    args.add_argument('-t', '--template', required=True, help='Path to a image of the board to extract a template.')
-    args.add_argument('-i', '--input', required=True, help='Input directory with regular_tasks/ and bonus_task/ containing images.')
+    args.add_argument('-t', '--template', help='Path to a image of the board to extract a template.',
+                      default=BEST_TEMPLATE)
+    args.add_argument('-i', '--input', required=True,
+                      help='Input directory with regular_tasks/ and bonus_task/ containing images.')
     args.add_argument('-o', '--output', required=True, help='Output directory for predictions.')
 
     args = args.parse_args()
@@ -71,6 +76,7 @@ def main():
                 f.flush()
         except Exception as e:
             print(f"Error while solving bonus task for {label}", e)
+
 
 if __name__ == "__main__":
     main()

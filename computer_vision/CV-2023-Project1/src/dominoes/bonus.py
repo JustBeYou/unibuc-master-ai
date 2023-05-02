@@ -45,27 +45,27 @@ class BonusSolver:
                     print(f"Invalid square with corner {i, j}")
                     invalid_squares.append((i, j))
 
-                elif some_board[i][j] != -1 and some_board[i+1][j] != -1 and \
-                        some_board[i][j] != some_board[i+1][j] and \
+                elif some_board[i][j] != -1 and some_board[i + 1][j] != -1 and \
+                        some_board[i][j] != some_board[i + 1][j] and \
                         some_directions[i][j] != 'down':
 
-                    print(f"Invalid neighbours {(i, j), (i+1, j)}")
-                    invalid_neighbours.append(((i, j), (i+1, j)))
+                    print(f"Invalid neighbours {(i, j), (i + 1, j)}")
+                    invalid_neighbours.append(((i, j), (i + 1, j)))
 
-                elif some_board[i][j] != -1 and some_board[i][j+1] != -1 and \
-                        some_board[i][j] != some_board[i][j+1] and \
+                elif some_board[i][j] != -1 and some_board[i][j + 1] != -1 and \
+                        some_board[i][j] != some_board[i][j + 1] and \
                         some_directions[i][j] != 'right':
 
                     print(f"Invalid neighbours {(i, j), (i, j + 1)}")
-                    invalid_neighbours.append(((i, j), (i, j+1)))
+                    invalid_neighbours.append(((i, j), (i, j + 1)))
 
         invalids_counts = len(invalid_squares) + len(invalid_neighbours)
         all_invalids = []
         for i, j in invalid_squares:
             all_invalids.append(board.Board.name(i, j))
-            all_invalids.append(board.Board.name(i+1, j))
-            all_invalids.append(board.Board.name(i, j+1))
-            all_invalids.append(board.Board.name(i+1, j+1))
+            all_invalids.append(board.Board.name(i + 1, j))
+            all_invalids.append(board.Board.name(i, j + 1))
+            all_invalids.append(board.Board.name(i + 1, j + 1))
 
         for domino in invalid_neighbours:
             for i, j in domino:
