@@ -1,0 +1,274 @@
+=== === ===
+Cycle 1/20
+Dead ants 0
+New ants 508
+Fitness score: 6752
+=== === ===
+
+=== === ===
+Cycle 2/20
+Dead ants 0
+New ants 512
+Fitness score: 5089
+=== === ===
+
+=== === ===
+Cycle 3/20
+Dead ants 0
+New ants 515
+Fitness score: 5081
+=== === ===
+
+=== === ===
+Cycle 4/20
+Dead ants 0
+New ants 508
+Fitness score: 4157
+=== === ===
+
+=== === ===
+Cycle 5/20
+Dead ants 0
+New ants 504
+Fitness score: 3767
+=== === ===
+
+=== === ===
+Cycle 6/20
+Dead ants 508
+New ants 514
+Fitness score: 4337
+=== === ===
+
+=== === ===
+Cycle 7/20
+Dead ants 512
+New ants 498
+Fitness score: 4235
+=== === ===
+
+=== === ===
+Cycle 8/20
+Dead ants 515
+New ants 473
+Fitness score: 2604
+=== === ===
+
+=== === ===
+Cycle 9/20
+Dead ants 508
+New ants 463
+Fitness score: 3601
+=== === ===
+
+=== === ===
+Cycle 10/20
+Dead ants 504
+New ants 431
+Fitness score: 3112
+=== === ===
+
+=== === ===
+Cycle 11/20
+Dead ants 514
+New ants 244
+Fitness score: 3607
+=== === ===
+
+=== === ===
+Cycle 12/20
+Dead ants 498
+New ants 97
+Fitness score: 4640
+=== === ===
+
+=== === ===
+Cycle 13/20
+Dead ants 473
+New ants 44
+Fitness score: 5569
+=== === ===
+
+=== === ===
+Cycle 14/20
+Dead ants 463
+New ants 12
+Fitness score: 7871
+=== === ===
+
+=== === ===
+Cycle 15/20
+Dead ants 431
+New ants 4
+Fitness score: 8137
+=== === ===
+
+=== === ===
+Cycle 16/20
+Dead ants 244
+New ants 1
+Fitness score: 8213
+=== === ===
+
+=== === ===
+Cycle 17/20
+Dead ants 97
+New ants 2
+Fitness score: 8365
+=== === ===
+
+=== === ===
+Cycle 18/20
+Dead ants 44
+New ants 0
+Fitness score: 8365
+=== === ===
+
+=== === ===
+Cycle 19/20
+Dead ants 12
+New ants 0
+Fitness score: 8365
+=== === ===
+
+=== === ===
+Cycle 20/20
+Dead ants 4
+New ants 0
+Fitness score: 8365
+=== === ===
+
+Solution (score = 8365):
+# a fangstrom.n.01 = a metric unit of length equal to one ten billionth of a meter (or 0.0001 micron); used to specify wavelengths of electromagnetic radiation
+
+# retired fretire.v.01 = go into retirement; stop performing one's work or withdraw from one's position
+
+# clerk fclerk.n.01 = an employee who performs clerical work (e.g., keeps records or accounts)
+
+# commissariat fcommissariat.n.01 = a stock or supply of foods
+
+# department fdepartment.n.01 = a specialized division of a large organization
+
+# came fcome.v.01 = move toward, travel toward something or somebody or approach something or somebody
+
+# too fexcessively.r.01 = to a degree exceeding normal or proper limits
+
+# he fhelium.n.01 = a very light colorless element that is one of the six inert gasses; the most difficult gas to liquefy; occurs in economically extractable amounts in certain natural gases (as those found in Texas and Kansas)
+
+# was fwashington.n.02 = a state in northwestern United States on the Pacific
+
+# drunk fdrunkard.n.01 = a chronic drinker
+
+# had fhave.v.01 = have or possess, either in a concrete or an abstract sense
+
+# a fangstrom.n.01 = a metric unit of length equal to one ten billionth of a meter (or 0.0001 micron); used to specify wavelengths of electromagnetic radiation
+
+# loud floud.a.01 = characterized by or producing sound of great volume or intensity
+
+# most fmost.a.01 = (superlative of `many' used with count nouns and often preceded by `the') quantifier meaning the greatest in number
+
+# unseemly findecent.s.01 = not in keeping with accepted standards of what is right or proper in polite society
+
+# laugh flaugh.n.01 = the sound of laughing
+
+# only flone.s.03 = being the only one; single and isolated from others
+
+# fancy fillusion.n.02 = something many people believe that is false
+
+# was fwashington.n.02 = a state in northwestern United States on the Pacific
+
+# a fangstrom.n.01 = a metric unit of length equal to one ten billionth of a meter (or 0.0001 micron); used to specify wavelengths of electromagnetic radiation
+
+# waistcoat fvest.n.01 = a man's sleeveless garment worn underneath a coat
+
+# one fone.n.01 = the smallest whole number or a numeral representing this number
+
+# visitors fvisitor.n.01 = someone who visits
+
+# sat fsaturday.n.01 = the seventh and last day of the week; observed as the Sabbath by Jews and some Christians
+
+# straight fheterosexual.n.01 = a heterosexual person; someone having a sexual orientation to persons of the opposite sex
+
+# down fdown.n.01 = soft fine feathers
+
+# table ftable.n.01 = a set of data arranged in rows and columns
+
+# even fevening.n.01 = the latter part of the day (the period of decreasing daylight from late afternoon until nightfall)
+
+# greeting fgreeting.n.01 = (usually plural) an acknowledgment or expression of good will (especially on meeting)
+
+# finally ffinally.r.01 = after an unspecified period of time or an especially long delay
+
+# one fone.n.01 = the smallest whole number or a numeral representing this number
+
+# person fperson.n.01 = a human being
+
+# having fhave.v.01 = have or possess, either in a concrete or an abstract sense
+
+# no fno.n.01 = a negative
+
+# suit fsuit.n.01 = a set of garments (usually including a jacket and trousers or skirt) for outerwear all of the same fabric and color
+
+# appeared flook.v.02 = give a certain impression or have a certain outward aspect
+
+# in finch.n.01 = a unit of length equal to one twelfth of a foot
+
+# but fmerely.r.01 = and nothing more
+
+# was fwashington.n.02 = a state in northwestern United States on the Pacific
+
+# too fexcessively.r.01 = to a degree exceeding normal or proper limits
+
+# much fmuch.n.01 = a great amount or extent
+
+# efforts fattempt.n.01 = earnest and conscientious activity intended to do or accomplish something
+
+# pole fpole.n.01 = a long (usually round) rod of wood or metal or plastic
+
+# succeeded fsucceed.v.01 = attain success or reach a desired goal
+
+# in finch.n.01 = a unit of length equal to one twelfth of a foot
+
+# removing fremove.v.01 = remove something concrete, as by lifting, pushing, or taking off, or remove something abstract
+
+# pole fpole.n.01 = a long (usually round) rod of wood or metal or plastic
+
+# brought fbring.v.01 = take something or somebody with oneself somewhere
+
+# however fhowever.r.01 = despite anything to the contrary (usually following a concession)
+
+# two ftwo.n.01 = the cardinal number that is the sum of one and one or a numeral representing this number
+
+# other fother.a.01 = not the same one or ones already mentioned or implied; - the White Queen
+
+# poles fpole.n.01 = a long (usually round) rod of wood or metal or plastic
+
+# who fworld_health_organization.n.01 = a United Nations agency to coordinate international health activities and to help governments improve health services
+
+# did fmake.v.01 = engage in
+
+# not fnot.r.01 = negation of a word or group of words
+
+# live fpopulate.v.01 = inhabit or live in; be an inhabitant of
+
+# at fastatine.n.01 = a highly unstable radioactive element (the heaviest of the halogen series); a decay product of uranium and thorium
+
+# s fsecond.n.01 = 1/60 of a minute; the basic unit of time adopted under the Systeme International d'Unites
+
+# no fno.n.01 = a negative
+
+# one fone.n.01 = the smallest whole number or a numeral representing this number
+
+# had fhave.v.01 = have or possess, either in a concrete or an abstract sense
+
+# seen fsee.v.01 = perceive by sight or have the power to perceive by sight
+
+# here fhere.n.01 = the present location; this place
+
+# before fearlier.r.01 = earlier in time; previously
+
+# all fall.a.01 = quantifier; used with either mass or count nouns to indicate the whole number or amount of or every one of a class
+
+# irritated fannoy.v.01 = cause annoyance in; disturb, especially by minor irritations
+
+# intensely fintensely.r.01 = in an intense manner

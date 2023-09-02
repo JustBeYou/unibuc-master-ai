@@ -38,7 +38,7 @@ def main():
 
 
 steps = 0
-debug = False
+debug = True
 
 
 def parse(goal, words, grammar, rev_lc_table):

@@ -12,7 +12,7 @@ def get_domino_circles(image: numpy.ndarray) -> Optional[numpy.ndarray]:
     return cv2.HoughCircles(
         image, cv2.HOUGH_GRADIENT_ALT, 1, 5,
         param1=400, param2=0.65,
-        minRadius=12, maxRadius=20
+        minRadius=10, maxRadius=20
     )
 
 
