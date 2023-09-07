@@ -1,7 +1,7 @@
-from enum import Enum
-from typing import List, Tuple
 import dataclasses
 import os
+from enum import Enum
+from typing import List
 
 import numpy
 
@@ -123,6 +123,7 @@ class Settings:
 
     board_match_max_features: int
     board_match_percent: float
+
 
 def rectangle(top_left: List[int], width: int, height: int) -> List[List[int]]:
     return [

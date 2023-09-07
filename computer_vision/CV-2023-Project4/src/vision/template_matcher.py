@@ -1,6 +1,7 @@
+from typing import Tuple
+
 import cv2
 import numpy
-from typing import Tuple
 
 from . import transforms
 

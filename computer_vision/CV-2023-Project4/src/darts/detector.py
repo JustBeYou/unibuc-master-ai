@@ -1,7 +1,8 @@
+from typing import Union
+
 import cv2
 import numpy
 from ultralytics import YOLO
-from typing import Union
 
 from darts import settings
 from darts.settings import BoardType
@@ -90,7 +91,8 @@ class Detector:
                 centers.append([cX, cY, 10])
 
             if len(centers) == 2:
-                intersections = transforms.line_polygon_intersection(centers[0][:2], centers[1][:2], box.reshape((-1, 2)))
+                intersections = transforms.line_polygon_intersection(centers[0][:2], centers[1][:2],
+                                                                     box.reshape((-1, 2)))
                 intersections = [(x, y, 15) for x, y in intersections]
             else:
                 mid_point, corner = transforms.shortest_side_info(triangle)
@@ -110,7 +112,8 @@ class Detector:
             for box, rect, triangle, arrowhead in zip(boxes, rects, triangles, arrowheads):
                 match_color = cv2.polylines(match_color, [box], True, (255, 0, 0), 5)
                 match_color = cv2.rectangle(match_color, rect[0], rect[1], (193, 182, 255), 5)
-                match_color = cv2.polylines(match_color, [numpy.array(triangle)], isClosed=True, color=(0, 255, 0), thickness=5)
+                match_color = cv2.polylines(match_color, [numpy.array(triangle)], isClosed=True, color=(0, 255, 0),
+                                            thickness=5)
                 match_color = transforms.draw_circles(match_color, [arrowhead], custom_color=(127, 0, 255))
 
             if self.task_settings.board_type == BoardType.Simple:
@@ -118,7 +121,7 @@ class Detector:
                     match_color,
                     self.task_settings.board_circle_center[0], self.task_settings.board_circle_center[1],
                     self.task_settings.board_annuli,
-                    custom_color=(193,182,255)
+                    custom_color=(193, 182, 255)
                 )
             elif self.task_settings.board_type == BoardType.Classic:
                 match_color = transforms.draw_sectors(
@@ -126,7 +129,7 @@ class Detector:
                     self.task_settings.board_circle_center,
                     settings.DART_BOARD_SECTORS,
                     5,
-                    offset_frac=1/2,
+                    offset_frac=1 / 2,
                     custom_color=(193, 182, 255)
                 )
 

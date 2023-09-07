@@ -1,5 +1,3 @@
-import logging
-import time
 import typing
 import unittest
 
@@ -53,6 +51,7 @@ class BoardExtractionTestCase(unittest.TestCase):
         #     output.debug_output_image(f"Processed video last frame ({i} {name})", fg2)
         #     # output.debug_output_image(f"Processed video last frame ({i} {name})", fg3)
         #     capture.release()
+
 
 if __name__ == '__main__':
     unittest.main()

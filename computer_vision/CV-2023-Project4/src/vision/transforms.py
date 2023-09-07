@@ -1,6 +1,7 @@
 import cv2
 import numpy
 
+
 def draw_circles(image: numpy.ndarray, circles, custom_color=(0, 0, 0)) -> numpy.ndarray:
     image = image.copy()
     for (x, y, r) in circles:
@@ -28,8 +29,10 @@ def draw_sectors(image, center, num_sectors, line_thickness, offset_frac=0, cust
 
     return image
 
+
 def crop(img: numpy.ndarray, top_left, bottom_right):
     return img[top_left[1]:bottom_right[1], top_left[0]:bottom_right[0]]
+
 
 def read(path: str) -> numpy.ndarray:
     return cv2.imread(path, cv2.IMREAD_COLOR)
@@ -53,12 +56,14 @@ def align_images(A, B):
     M = numpy.float32([[1, 0, x_shift], [0, 1, y_shift]])
     return cv2.warpAffine(A, M, B.shape[1::-1])
 
+
 def get_objects_contours(img, tmpl):
     backSub = cv2.createBackgroundSubtractorMOG2()
     tmpl = align_images(tmpl, img)
     backSub.apply(grayscale(tmpl))
     x = backSub.apply(grayscale(img))
     return emphasize_contours(x)
+
 
 def enclosing_rectangle(polygon):
     if len(polygon) != 4:
@@ -74,6 +79,7 @@ def enclosing_rectangle(polygon):
 
     return ((min_x, min_y), (max_x, max_y))
 
+
 def emphasize_contours(image):
     board = grayscale(image)
     blur = cv2.GaussianBlur(board, (5, 5), 0)
@@ -82,11 +88,12 @@ def emphasize_contours(image):
     kernel = numpy.ones((3, 3), dtype=numpy.uint8)
     x = cv2.erode(thresh, kernel, iterations=2)
 
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(5,5))
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
     x = cv2.morphologyEx(x, cv2.MORPH_OPEN, kernel)
 
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(5,5))
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
     return cv2.morphologyEx(x, cv2.MORPH_CLOSE, kernel)
+
 
 def filter_contours(contours, min_area, max_area, min_sides, max_sides, min_width, polygon):
     contours = [contour for contour in contours if min_area < cv2.contourArea(contour) < max_area]
@@ -157,9 +164,12 @@ def intersect(A, B, C, D):
 
 def shortest_side_info(triangle):
     distances = [
-        (numpy.linalg.norm(numpy.array(triangle[0]) - numpy.array(triangle[1])), (triangle[0], triangle[1], triangle[2])),
-        (numpy.linalg.norm(numpy.array(triangle[1]) - numpy.array(triangle[2])), (triangle[1], triangle[2], triangle[0])),
-        (numpy.linalg.norm(numpy.array(triangle[0]) - numpy.array(triangle[2])), (triangle[0], triangle[2], triangle[1]))
+        (numpy.linalg.norm(numpy.array(triangle[0]) - numpy.array(triangle[1])),
+         (triangle[0], triangle[1], triangle[2])),
+        (numpy.linalg.norm(numpy.array(triangle[1]) - numpy.array(triangle[2])),
+         (triangle[1], triangle[2], triangle[0])),
+        (
+        numpy.linalg.norm(numpy.array(triangle[0]) - numpy.array(triangle[2])), (triangle[0], triangle[2], triangle[1]))
     ]
 
     shortest = sorted(distances, key=lambda x: x[0])[0]

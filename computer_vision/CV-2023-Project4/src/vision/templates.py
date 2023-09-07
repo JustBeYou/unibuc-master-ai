@@ -37,6 +37,7 @@ def __create_output_square(quadrilateral: numpy.ndarray) -> (numpy.ndarray, tupl
         [0, length - 1]
     ], dtype=numpy.float32), (length, length)
 
+
 def __create_output_circle(quadrilateral: numpy.ndarray) -> (numpy.ndarray, tuple[int, int]):
     length = __square_length(quadrilateral)
     K = length / numpy.sqrt(2)
@@ -46,7 +47,8 @@ def __create_output_circle(quadrilateral: numpy.ndarray) -> (numpy.ndarray, tupl
         [K - 1, 0],
         [2 * K - 1, K - 1],
         [K - 1, 2 * K - 1]
-    ], dtype=numpy.float32), (int(2*K) + 500, int(2*K))
+    ], dtype=numpy.float32), (int(2 * K) + 500, int(2 * K))
+
 
 def __square_length(quadrilateral: numpy.ndarray):
     diffs = [quadrilateral[i] - quadrilateral[(i + 1) % len(quadrilateral)] for i in range(len(quadrilateral))]
