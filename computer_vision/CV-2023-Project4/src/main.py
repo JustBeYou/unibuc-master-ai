@@ -4,6 +4,7 @@ import os
 
 from darts import settings
 from darts.detector import Detector
+from darts.video_detector import detect_in_videos
 
 
 # python src/main.py --input ./data/evaluation/fake_test --output ./data/evaluation/fake_results
@@ -37,6 +38,10 @@ def main():
     detections = detector_task2.detect_arrowheads(task2_files)
     output_answers(args, "Task2", task2_files, detections)
 
+    task3_files = list_files_in_dir(os.path.join(args.input, "Task3"))
+    logging.info(f"Loaded {len(task3_files)} videos for Task 3.")
+    detections = detect_in_videos(task3_files, debug_mode=args.debug)
+    output_answers_3(args, "Task3", task3_files, detections)
 
 def prepare_output_dir(args):
     os.system(f'mkdir -p {args.output}/Task1')
@@ -45,7 +50,7 @@ def prepare_output_dir(args):
 
 
 def list_files_in_dir(folder):
-    return sorted(list(map(lambda entry: os.path.join(folder, entry), os.listdir(folder))))
+    return sorted(list(map(lambda entry: os.path.join(folder, entry), filter(lambda entry: '.mp4' in entry or '.jpg' in entry or '.jpeg' in entry,os.listdir(folder)))))
 
 
 def output_answers(args, task, files, detections):
@@ -56,9 +61,16 @@ def output_answers(args, task, files, detections):
             fout.write('\n'.join(detection) + "\n")
             fout.flush()
 
+def output_answers_3(args, task, files, detections):
+    for file, detection in zip(files, detections):
+        output_name = os.path.join(args.output, task, replace_img_with_txt(file.split('/')[-1]))
+        with open(output_name, 'w') as fout:
+            fout.write(detection + "\n")
+            fout.flush()
+
 
 def replace_img_with_txt(name):
-    return name.replace('.jpg', '.txt').replace('.jpeg', '.txt').replace('.png', '.txt')
+    return name.replace('.jpg', '.txt').replace('.jpeg', '.txt').replace('.png', '.txt').replace('.mp4', '.txt')
 
 
 if __name__ == "__main__":

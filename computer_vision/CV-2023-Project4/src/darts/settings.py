@@ -148,7 +148,7 @@ default_task1 = Settings(
         dtype=numpy.float32
     ),
 
-    board_annuli=[0, 33, 155, 270, 385, 500, 615, 730, 845, 960, 1120],
+    board_annuli=[0, 33, 155, 270, 385, 500, 615, 730, 845, 960, 1200],
     board_circle_center=[1104, 1129],
 
     board_match_max_features=2500,
@@ -173,7 +173,7 @@ default_task2 = Settings(
         dtype=numpy.float32
     ),
 
-    board_annuli=[0, 40, 78, 485, 539, 810, 862],
+    board_annuli=[0, 40, 78, 485, 539, 810, 900],
     board_circle_center=[1084, 1089],
 
     board_match_max_features=2000,

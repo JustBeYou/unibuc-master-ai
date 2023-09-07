@@ -30,6 +30,27 @@ def draw_sectors(image, center, num_sectors, line_thickness, offset_frac=0, cust
 
     return image
 
+def draw_specific_sectors(image, center, sectors, line_thickness, custom_color=(255, 0, 0)):
+    height, width = image.shape[:2]
+    max_len = max(width, height) * 2
+
+    for sector in sectors:
+        angle = numpy.radians(-sector)
+        end_x = int(center[0] + max_len * numpy.cos(angle))
+        end_y = int(center[1] + max_len * numpy.sin(angle))
+        cv2.line(image, center, (end_x, end_y), custom_color, line_thickness)
+
+    return image
+
+def find_angle(point, circle_center):
+    delta_x = point[0] - circle_center[0]
+    delta_y = point[1] - circle_center[1]
+    angle = numpy.arctan2(delta_y, delta_x) * (180 / numpy.pi)
+
+    if angle < 0:
+        angle += 360
+
+    return 360 - angle
 
 def find_sector(point, circle_center, sectors, degree_shift_frac):
     delta_x = point[0] - circle_center[0]
@@ -141,6 +162,27 @@ def filter_contours(contours, min_area, max_area, min_sides, max_sides, min_widt
 
     return sorted(output, key=cv2.contourArea, reverse=True)[:2]
 
+def filter_contour_in_video(contours, min_area, max_area):
+    return [contour for contour in contours if min_area < cv2.contourArea(contour) < max_area]
+
+def difference(modified, original):
+    return emphasize_contours_in_frame(cv2.absdiff(prepare_for_diff(modified), prepare_for_diff(original)))
+
+def prepare_for_diff(img):
+    return grayscale(img)
+
+def emphasize_contours_in_frame(image):
+    image = grayscale(image)
+    image = cv2.GaussianBlur(image, (5, 5), 0)
+    _, thresh = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    return thresh
+
+def get_circles(image: numpy.ndarray):
+    return cv2.HoughCircles(
+        image, cv2.HOUGH_GRADIENT_ALT,1.5,5,
+        param1=500,param2=0.8,
+        minRadius=15,maxRadius=35
+    )
 
 def line_polygon_intersection(p1, p2, polygon):
     intersections = []
@@ -202,3 +244,6 @@ def dist(p1, p2):
     x1, y1 = p1
     x2, y2 = p2
     return numpy.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
+
+def draw_rect(img, x, y, w, h, color=(0, 255, 0)):
+    return cv2.rectangle(img, (x, y), (x+w, y+h), color, 3)

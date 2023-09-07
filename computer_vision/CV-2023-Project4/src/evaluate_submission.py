@@ -212,20 +212,24 @@ def evaluate_results_task3(predictions_path, ground_truth_path, verbose=0):
             gt = open(filename_ground_truth, "rt")
 
             p_dart_value_flag = p.readline()
-            p_flag = p_dart_value_flag[0]
-            p_value = p_dart_value_flag[1:]
+            p_flag = p_dart_value_flag[0].strip()
+            p_value = p_dart_value_flag[1:].strip()
 
             gt_dart_value_flag = gt.readline()
-            gt_flag = gt_dart_value_flag[0]
-            gt_value = gt_dart_value_flag[1:]
+            gt_flag = gt_dart_value_flag[0].strip()
+            gt_value = gt_dart_value_flag[1:].strip()
 
             if (p_flag == gt_flag):
                 correct_flag = 1
                 total_correct_number_darts_values = total_correct_number_darts_values + 1
+            else:
+                print("BAD flag", p_flag, gt_flag, filename_predictions)
 
             if (p_value == gt_value):
                 correct_value = 1
                 total_correct_number_darts_flags = total_correct_number_darts_flags + 1
+            else:
+                print("BAD value", p_value, gt_value, filename_predictions)
 
             p.close()
             gt.close()
