@@ -1,4 +1,5 @@
-from typing import Union
+import logging
+from typing import Union, List
 
 import cv2
 import numpy
@@ -19,6 +20,8 @@ class Detector:
         self.debug_mode = debug_mode
 
     def __init_template_matcher(self):
+        logging.info(f"Preparing board template for board type = {self.task_settings.board_type}.")
+
         board_for_template = transforms.read(self.task_settings.board_for_template_path)
         template_image = templates.create(
             board_for_template,
@@ -31,18 +34,33 @@ class Detector:
             self.task_settings.board_match_max_features
         )
 
-    def detect_arrowheads(self, image_paths: list[str]):
+    def detect_arrowheads(self, image_paths: list[str]) -> List[List[str]]:
+        logging.info("Loading images to memory.")
         images = [transforms.read(image_path) for image_path in image_paths]
+
+        logging.info("Detecting darts in images using object detection model. Will take some time.")
         detection_model = self.__get_dart_detector_model()
         dart_detections = detection_model(images)
+
+        assert len(image_paths) == len(images)
         assert len(images) == len(dart_detections)
 
-        return [
-            self.__extract_arrowheads_from_image(image, dart_detection)
-            for image, dart_detection in zip(images, dart_detections)
-        ]
+        detections = []
+        for i, (path, image, dart_detection) in enumerate(zip(image_paths, images, dart_detections)):
+            logging.info(f"Extracting arrows from image {i + 1}/{len(images)}.")
+            try:
+                detection = self.__extract_arrowheads_from_image(image, dart_detection)
+                detections.append(detection)
+            except Exception as e:
+                detections.append([])
+                logging.error(f"Something went wrong for image: {path} - {e}. Skipping.")
 
-    def __extract_arrowheads_from_image(self, image: numpy.ndarray, dart_detection):
+                if self.debug_mode:
+                    raise e
+
+        return detections
+
+    def __extract_arrowheads_from_image(self, image: numpy.ndarray, dart_detection) -> List[str]:
         homography, (h, w) = self.matcher.match(image, self.task_settings.board_match_percent)
         match_color = cv2.warpPerspective(image, homography, (h, w))
 
@@ -72,7 +90,7 @@ class Detector:
             contours, _ = cv2.findContours(rect_only, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             min_area = 3_000
             max_area = 100_000
-            contours = transforms.filter_contours(contours, min_area, max_area, 3, 15, 100, box)
+            contours = transforms.filter_contours(contours, min_area, max_area, 3, 15, 100, objects_in_match)
             contours = [numpy.add(contour, [rect[0][0], rect[0][1]]) for contour in contours]
             all_contours.append(contours)
 
@@ -116,14 +134,14 @@ class Detector:
                                             thickness=5)
                 match_color = transforms.draw_circles(match_color, [arrowhead], custom_color=(127, 0, 255))
 
-            if self.task_settings.board_type == BoardType.Simple:
-                match_color = transforms.draw_concentric_circles(
-                    match_color,
-                    self.task_settings.board_circle_center[0], self.task_settings.board_circle_center[1],
-                    self.task_settings.board_annuli,
-                    custom_color=(193, 182, 255)
-                )
-            elif self.task_settings.board_type == BoardType.Classic:
+            match_color = transforms.draw_concentric_circles(
+                match_color,
+                self.task_settings.board_circle_center[0], self.task_settings.board_circle_center[1],
+                self.task_settings.board_annuli,
+                custom_color=(193, 182, 255)
+            )
+
+            if self.task_settings.board_type == BoardType.Classic:
                 match_color = transforms.draw_sectors(
                     match_color,
                     self.task_settings.board_circle_center,
@@ -134,6 +152,73 @@ class Detector:
                 )
 
             output.debug_output_image("arrowheads", match_color)
+
+        positions = []
+        center = (self.task_settings.board_circle_center[0], self.task_settings.board_circle_center[1])
+
+        arrowheads = [arrowhead[:2] for arrowhead in arrowheads]
+
+        for arrowhead in arrowheads:
+            if self.task_settings.board_type == BoardType.Simple:
+                center_dist = transforms.dist(center, arrowhead)
+                for i in range(len(self.task_settings.board_annuli) - 1):
+                    a = self.task_settings.board_annuli[i]
+                    b = self.task_settings.board_annuli[i + 1]
+
+                    # print(i, a, center_dist, b)
+                    if a <= center_dist <= b:
+                        positions.append(10 - i)
+                        break
+
+            elif self.task_settings.board_type == BoardType.Classic:
+                center_dist = transforms.dist(center, arrowhead)
+                radii = self.task_settings.board_annuli
+
+                # double bullseye
+                if radii[0] <= center_dist <= radii[1]:
+                    positions.append('b50')
+                elif radii[1] <= center_dist <= radii[2]:
+                    positions.append('b25')
+                else:
+                    circle_idx = None
+
+                    for i in range(2, len(self.task_settings.board_annuli) - 1):
+                        a = self.task_settings.board_annuli[i]
+                        b = self.task_settings.board_annuli[i + 1]
+
+                        if a <= center_dist <= b:
+                            circle_idx = i
+                            break
+
+                    if circle_idx is None:
+                        logging.error("Some arrow is outside of board?")
+                        continue
+
+                    ring = None
+                    if circle_idx == 2 or circle_idx == 4:
+                        ring = "s"
+                    elif circle_idx == 3:
+                        ring = "t"
+                    elif circle_idx == 5:
+                        ring = "d"
+
+                    if ring is None:
+                        logging.error("Some arrow has no ring?")
+                        continue
+
+                    sector = transforms.find_sector(arrowhead, center, settings.DART_BOARD_SECTORS, 1 / 2)
+                    score = settings.DART_BOARD_SECTOR_POINTS[sector]
+
+                    positions.append(f"{ring}{score}")
+            else:
+                raise Exception("Unknown board type")
+
+        if self.task_settings.board_type == BoardType.Simple:
+            positions = list(map(str, sorted(positions)))
+        else:
+            positions = sorted(positions)
+
+        return positions
 
     @staticmethod
     def __get_dart_detector_model() -> YOLO:

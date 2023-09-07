@@ -8,7 +8,7 @@ from darts.detector import Detector
 class BoardExtractionTestCase(unittest.TestCase):
     def __test_baoard_extraction(self, test_settings: settings.Settings, images: typing.List[str]):
         darts_detector = Detector(test_settings, debug_mode=True)
-        darts_detector.detect_arrowheads(images[:1])
+        darts_detector.detect_arrowheads(images)
 
     def test_board_extraction_task_1(self):
         self.__test_baoard_extraction(settings.default_task1, settings.ALL_IMAGES_TASK_1)

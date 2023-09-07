@@ -9,10 +9,11 @@ def draw_circles(image: numpy.ndarray, circles, custom_color=(0, 0, 0)) -> numpy
     return image
 
 
-def draw_concentric_circles(image: numpy.ndarray, center_x, center_y, radii, custom_color=(0, 0, 0)) -> numpy.ndarray:
+def draw_concentric_circles(image: numpy.ndarray, center_x, center_y, radii, custom_color=(0, 0, 0),
+                            thickness=5) -> numpy.ndarray:
     image = image.copy()
     for r in radii:
-        cv2.circle(image, (center_x, center_y), r, custom_color, thickness=5)
+        cv2.circle(image, (center_x, center_y), r, custom_color, thickness=thickness)
     return image
 
 
@@ -28,6 +29,24 @@ def draw_sectors(image, center, num_sectors, line_thickness, offset_frac=0, cust
         cv2.line(image, center, (end_x, end_y), custom_color, line_thickness)
 
     return image
+
+
+def find_sector(point, circle_center, sectors, degree_shift_frac):
+    delta_x = point[0] - circle_center[0]
+    delta_y = point[1] - circle_center[1]
+    angle = numpy.arctan2(delta_y, delta_x) * (180 / numpy.pi)
+
+    if angle < 0:
+        angle += 360
+
+    sector_size = 360 / sectors
+    adjusted_angle = angle - sector_size * degree_shift_frac
+    if adjusted_angle < 0:
+        adjusted_angle += 360
+
+    sector_number = int(adjusted_angle // sector_size)
+
+    return sector_number
 
 
 def crop(img: numpy.ndarray, top_left, bottom_right):
@@ -95,7 +114,7 @@ def emphasize_contours(image):
     return cv2.morphologyEx(x, cv2.MORPH_CLOSE, kernel)
 
 
-def filter_contours(contours, min_area, max_area, min_sides, max_sides, min_width, polygon):
+def filter_contours(contours, min_area, max_area, min_sides, max_sides, min_width, image):
     contours = [contour for contour in contours if min_area < cv2.contourArea(contour) < max_area]
 
     output = []
@@ -169,10 +188,17 @@ def shortest_side_info(triangle):
         (numpy.linalg.norm(numpy.array(triangle[1]) - numpy.array(triangle[2])),
          (triangle[1], triangle[2], triangle[0])),
         (
-        numpy.linalg.norm(numpy.array(triangle[0]) - numpy.array(triangle[2])), (triangle[0], triangle[2], triangle[1]))
+            numpy.linalg.norm(numpy.array(triangle[0]) - numpy.array(triangle[2])),
+            (triangle[0], triangle[2], triangle[1]))
     ]
 
     shortest = sorted(distances, key=lambda x: x[0])[0]
     middle_point = tuple((numpy.array(shortest[1][0]) + numpy.array(shortest[1][1])) / 2)
 
     return middle_point, shortest[1][2]
+
+
+def dist(p1, p2):
+    x1, y1 = p1
+    x2, y2 = p2
+    return numpy.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)

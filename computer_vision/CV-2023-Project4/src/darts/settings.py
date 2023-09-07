@@ -148,14 +148,16 @@ default_task1 = Settings(
         dtype=numpy.float32
     ),
 
-    board_annuli=[33, 155, 155, 1120, 270, 1120, 385, 1120, 500, 1120, 615, 1120, 730, 1120, 845, 1120],
+    board_annuli=[0, 33, 155, 270, 385, 500, 615, 730, 845, 960, 1120],
     board_circle_center=[1104, 1129],
 
     board_match_max_features=2500,
     board_match_percent=0.50
 )
+assert len(default_task1.board_annuli) == 11
 
 DART_BOARD_SECTORS = 20
+DART_BOARD_SECTOR_POINTS = [10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5, 20, 1, 18, 4, 13, 6]
 
 default_task2 = Settings(
     BoardType.Classic,
@@ -171,12 +173,13 @@ default_task2 = Settings(
         dtype=numpy.float32
     ),
 
-    board_annuli=[40, 78, 485, 539, 810, 862],
+    board_annuli=[0, 40, 78, 485, 539, 810, 862],
     board_circle_center=[1084, 1089],
 
     board_match_max_features=2000,
     board_match_percent=0.40
 )
+assert len(default_task2.board_annuli) == 7
 
 
 @dataclasses.dataclass
