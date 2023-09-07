@@ -2,7 +2,6 @@ import enum
 
 import cv2
 import numpy
-from . import transforms
 
 
 class TemplateType(enum.Enum):
@@ -21,10 +20,6 @@ def create(image: numpy.ndarray, quadrilateral: numpy.ndarray, template_type: Te
     elif template_type == TemplateType.RECTANGLE:
         raise NotImplementedError('Rectangles are not yet supported.')
     elif template_type == TemplateType.CIRCLE:
-        # to_draw = []
-        # for point in quadrilateral:
-        #     to_draw.append((int(point[0]), int(point[1]), 20))
-        # image = transforms.draw_circles(image, circles=to_draw, custom_color=(255, 0, 0))
         output_points, dimension = __create_output_circle(quadrilateral)
     else:
         raise RuntimeError('Unknown template type passed to creator.')

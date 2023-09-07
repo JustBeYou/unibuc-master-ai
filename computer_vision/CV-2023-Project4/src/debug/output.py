@@ -3,16 +3,12 @@ import os.path
 import cv2
 import numpy
 
-import constants
 from darts import settings
 
 label_counts = {}
 
 
 def debug_output_image(label: str, image: numpy.ndarray):
-    if not constants.WRITE_OUTPUTS:
-        return
-
     label = '_'.join(label.lower().split(' '))
     if label not in label_counts:
         label_counts[label] = 0

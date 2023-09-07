@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import List, Tuple
 import dataclasses
 import os
@@ -8,9 +9,11 @@ ROOT_DIRECTORY = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../.
 
 SRC_DIRECTORY = os.path.join(ROOT_DIRECTORY, 'src')
 TESTS_DIRECTORY = os.path.join(ROOT_DIRECTORY, 'tests')
+CONFIG_DIRECTORY = os.path.join(ROOT_DIRECTORY, 'config')
+
+YOLO_MODEL_PATH = os.path.join(CONFIG_DIRECTORY, 'best.pt')
 
 DATA_DIRECTORY = os.path.join(ROOT_DIRECTORY, 'data')
-AUXILIARY_DIRECTORY = os.path.join(DATA_DIRECTORY, 'auxiliary_images')
 TRAIN_DIRECTORY = os.path.join(DATA_DIRECTORY, 'train')
 
 TEST_OUTPUTS_DIRECTORY = os.path.join(DATA_DIRECTORY, 'test_outputs')
@@ -102,11 +105,17 @@ ALL_VIDEOS_TASK_3 = sorted([
 ])
 ALL_VIDEOS_TASK_3 = list(map(lambda vid: os.path.join(DATA_DIRECTORY, vid), ALL_VIDEOS_TASK_3))
 
+
+class BoardType(Enum):
+    Simple = 0
+    Classic = 1
+
+
 @dataclasses.dataclass
 class Settings:
-    dart_template_path: str
+    board_type: BoardType
+
     board_for_template_path: str
-    board_template_crop: List[Tuple[int, int]]
     board_template_quadrilateral: numpy.ndarray
 
     board_annuli: List[int]
@@ -123,24 +132,11 @@ def rectangle(top_left: List[int], width: int, height: int) -> List[List[int]]:
         [top_left[0], top_left[1] + height],
     ]
 
-def gen_task1_annuli() -> List[int]:
-    dif = 540 // 2 - 311 // 2
-    annuli = [66 // 2, 311 // 2]
-    for i in range(7):
-        annuli.append(311 // 2 + dif * i)
-    annuli.append(1120)
-    return annuli
-
-def gen_task2_annuli() -> List[int]:
-    return [40, 156 // 2, 970 // 2, 1078 // 2, 1620 // 2, 1724 // 2]
 
 default_task1 = Settings(
-    dart_template_path=os.path.join(AUXILIARY_DIRECTORY, 'dart_template.png'),
-    board_for_template_path=os.path.join(AUXILIARY_DIRECTORY, 'template_task1.jpg'),
-    # board_template_quadrilateral=numpy.array(
-    #     rectangle([254, 332], 1742, 2264),
-    #     dtype=numpy.float32
-    # ), # rectangle
+    board_type=BoardType.Simple,
+
+    board_for_template_path=os.path.join(CONFIG_DIRECTORY, 'template_task1.jpg'),
     board_template_quadrilateral=numpy.array(
         [
             [254, 1535],
@@ -149,11 +145,9 @@ default_task1 = Settings(
             [1327, 2553]
         ],
         dtype=numpy.float32
-    ), # circle
-    board_template_crop=[(254, 332), (254 + 1742, 332 + 2264)], # no nail
-    # board_template_crop=[(254, 165), (254 + 1742, 165 + 2431)], # nail included
+    ),
 
-    board_annuli=gen_task1_annuli(),
+    board_annuli=[33, 155, 155, 1120, 270, 1120, 385, 1120, 500, 1120, 615, 1120, 730, 1120, 845, 1120],
     board_circle_center=[1104, 1129],
 
     board_match_max_features=2500,
@@ -163,12 +157,9 @@ default_task1 = Settings(
 DART_BOARD_SECTORS = 20
 
 default_task2 = Settings(
-    dart_template_path=os.path.join(AUXILIARY_DIRECTORY, 'dart_template.png'),
-    board_for_template_path=os.path.join(AUXILIARY_DIRECTORY, 'template_task2.jpg'),
-    # board_template_quadrilateral=numpy.array(
-    #     rectangle([309, 774], 1712, 2173),
-    #     dtype=numpy.float32
-    # ),
+    BoardType.Classic,
+
+    board_for_template_path=os.path.join(CONFIG_DIRECTORY, 'template_task2.jpg'),
     board_template_quadrilateral=numpy.array(
         [
             [316, 1991],
@@ -177,11 +168,10 @@ default_task2 = Settings(
             [1388, 2901]
         ],
         dtype=numpy.float32
-    ),  # circle
-    board_template_crop=[(309, 774), (309 + 1712, 774 + 2173)],
+    ),
 
-    board_annuli=gen_task2_annuli(),
-    board_circle_center=[1104 - 20, 1129 - 40],
+    board_annuli=[40, 78, 485, 539, 810, 862],
+    board_circle_center=[1084, 1089],
 
     board_match_max_features=2000,
     board_match_percent=0.40
@@ -193,6 +183,4 @@ class VideoSettings:
     pass
 
 
-default_task3 = VideoSettings(
-
-)
+default_task3 = VideoSettings()
