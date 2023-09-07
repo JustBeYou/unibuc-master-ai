@@ -13,10 +13,20 @@ from vision import templates, transforms, template_matcher
 
 from ultralytics import YOLO
 
-model = YOLO(f'{settings.DATA_DIRECTORY}/best.pt')
+model = None
+
+def lazy_load_model():
+    global model
+    if model is not None:
+        return model
+
+    model = YOLO(f'{settings.DATA_DIRECTORY}/best.pt')
+    return model
 
 class BoardExtractionTestCase(unittest.TestCase):
     def __test_baoard_extraction(self, test_settings: settings.Settings, images: typing.List[str]):
+        model = lazy_load_model()
+
         board_for_template = transforms.read(test_settings.board_for_template_path)
         template_image = templates.create(
             board_for_template,
@@ -158,6 +168,42 @@ class BoardExtractionTestCase(unittest.TestCase):
 
     def test_board_extraction_task_2(self):
         self.__test_baoard_extraction(settings.default_task2, settings.ALL_IMAGES_TASK_2)
+
+    def test_board_extraction_task_3(self):
+        # this is not ready yet
+        pass
+        # for i, video in enumerate(settings.ALL_VIDEOS_TASK_3):
+        #     logging.warning(f"Processing video {video}")
+        #
+        #     capture = cv2.VideoCapture(video)
+        #     assert capture.isOpened()
+        #
+        #     frame_count = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))
+        #
+        #     lst, fst = None, None
+        #     other = []
+        #     for frame_idx in range(frame_count):
+        #         _, frame = capture.read()
+        #         if frame_idx == 0:
+        #             fst = frame
+        #         elif frame_idx == frame_count - 1:
+        #             lst = frame
+        #
+        #         if 0 < frame_idx < 5:
+        #             other.append(frame)
+        #     #
+        #     # fg = transforms.difference(lst, fst)
+        #     # fg2 = transforms.get_objs_contours(lst, fst, [], False)
+        #     # fg3 = transforms.get_objs_contours(lst, fst, other, False)
+        #     # fg = transforms.difference(lst, fst)
+        #     fg = lst - fst
+        #     fg2 = cv2.absdiff(lst, fst)
+        #
+        #     name = video.split('/')[-1].replace('.mp4', '')
+        #     output.debug_output_image(f"Processed video last frame ({i} {name})", fg)
+        #     output.debug_output_image(f"Processed video last frame ({i} {name})", fg2)
+        #     # output.debug_output_image(f"Processed video last frame ({i} {name})", fg3)
+        #     capture.release()
 
 if __name__ == '__main__':
     unittest.main()

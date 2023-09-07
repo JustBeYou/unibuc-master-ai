@@ -73,6 +73,35 @@ ALL_IMAGES_TASK_2 = sorted([
 ])
 ALL_IMAGES_TASK_2 = list(map(lambda img: os.path.join(DATA_DIRECTORY, img), ALL_IMAGES_TASK_2))
 
+ALL_VIDEOS_TASK_3 = sorted([
+    "./train/Task3/18.mp4",
+    "./train/Task3/19.mp4",
+    "./train/Task3/07.mp4",
+    "./train/Task3/03.mp4",
+    "./train/Task3/05.mp4",
+    "./train/Task3/17.mp4",
+    "./train/Task3/16.mp4",
+    "./train/Task3/23.mp4",
+    "./train/Task3/11.mp4",
+    "./train/Task3/21.mp4",
+    "./train/Task3/08.mp4",
+    "./train/Task3/12.mp4",
+    "./train/Task3/02.mp4",
+    "./train/Task3/25.mp4",
+    "./train/Task3/22.mp4",
+    "./train/Task3/15.mp4",
+    "./train/Task3/04.mp4",
+    "./train/Task3/09.mp4",
+    "./train/Task3/24.mp4",
+    "./train/Task3/06.mp4",
+    "./train/Task3/10.mp4",
+    "./train/Task3/01.mp4",
+    "./train/Task3/14.mp4",
+    "./train/Task3/20.mp4",
+    "./train/Task3/13.mp4"
+])
+ALL_VIDEOS_TASK_3 = list(map(lambda vid: os.path.join(DATA_DIRECTORY, vid), ALL_VIDEOS_TASK_3))
+
 @dataclasses.dataclass
 class Settings:
     dart_template_path: str
@@ -156,4 +185,14 @@ default_task2 = Settings(
 
     board_match_max_features=2000,
     board_match_percent=0.40
+)
+
+
+@dataclasses.dataclass
+class VideoSettings:
+    pass
+
+
+default_task3 = VideoSettings(
+
 )
