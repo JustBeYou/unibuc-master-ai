@@ -16,7 +16,7 @@ def evaluate_results_task1(predictions_path, ground_truth_path, verbose=0):
             else:
                 name = str(i)
 
-            filename_predictions = predictions_path + name + ".txt"
+            filename_predictions = predictions_path + name + "_predicted.txt"
             filename_ground_truth = ground_truth_path + name + ".txt"
 
             p = open(filename_predictions, "rt")
@@ -102,7 +102,7 @@ def evaluate_results_task2(predictions_path, ground_truth_path, verbose=0):
             else:
                 name = str(i)
 
-            filename_predictions = predictions_path + name + ".txt"
+            filename_predictions = predictions_path + name + "_predicted.txt"
             filename_ground_truth = ground_truth_path + name + ".txt"
 
             p = open(filename_predictions, "rt")
@@ -205,7 +205,7 @@ def evaluate_results_task3(predictions_path, ground_truth_path, verbose=0):
             else:
                 name = str(i)
 
-            filename_predictions = predictions_path + name + ".txt"
+            filename_predictions = predictions_path + name + "_predicted.txt"
             filename_ground_truth = ground_truth_path + name + ".txt"
 
             p = open(filename_predictions, "rt")
@@ -251,7 +251,7 @@ def evaluate_results_task3(predictions_path, ground_truth_path, verbose=0):
 
 # change this on your machine
 predictions_path_root = "data/evaluation/fake_results/"
-ground_truth_path_root = "data/train/"
+ground_truth_path_root = "data/_train/"
 
 # task1
 verbose = 1

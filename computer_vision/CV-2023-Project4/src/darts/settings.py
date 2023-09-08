@@ -12,10 +12,7 @@ TESTS_DIRECTORY = os.path.join(ROOT_DIRECTORY, 'tests')
 CONFIG_DIRECTORY = os.path.join(ROOT_DIRECTORY, 'config')
 
 YOLO_MODEL_PATH = os.path.join(CONFIG_DIRECTORY, 'best.pt')
-
 DATA_DIRECTORY = os.path.join(ROOT_DIRECTORY, 'data')
-TRAIN_DIRECTORY = os.path.join(DATA_DIRECTORY, 'train')
-
 TEST_OUTPUTS_DIRECTORY = os.path.join(DATA_DIRECTORY, 'test_outputs')
 
 ALL_IMAGES_TASK_1 = sorted([

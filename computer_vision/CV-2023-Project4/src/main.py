@@ -70,7 +70,8 @@ def output_answers_3(args, task, files, detections):
 
 
 def replace_img_with_txt(name):
-    return name.replace('.jpg', '.txt').replace('.jpeg', '.txt').replace('.png', '.txt').replace('.mp4', '.txt')
+    ending = '_predicted.txt'
+    return name.replace('.jpg', ending).replace('.jpeg', ending).replace('.png', ending).replace('.mp4', ending)
 
 
 if __name__ == "__main__":
