@@ -1,3 +1,4 @@
+import org.apache.logging.log4j.LogManager;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.tika.exception.TikaException;
@@ -35,7 +36,7 @@ class InvertedIndexBuilderTest {
         // Create an InvertedIndexBuilder
         String indexName = "testIndex";
         String indexPath = tempDir.resolve("index").toString();
-        InvertedIndexBuilder builder = new InvertedIndexBuilder(indexName, documentLoader, indexPath);
+        InvertedIndexBuilder builder = new InvertedIndexBuilder(indexName, documentLoader, indexPath, LogManager.getLogger(InvertedIndexBuilderTest.class));
 
         // Build the index
         builder.build();

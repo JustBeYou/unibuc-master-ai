@@ -36,6 +36,10 @@ public class Main {
                 throw new ParseException("Invalid command");
             }
         } catch (ParseException exp) {
+            logger.info("Usage: java -jar <path> [options here]");
+            for (var option: options.getOptions()) {
+                logger.info(option.getOpt() + " -> " + option.getDescription());
+            }
             logger.error("Parsing failed.", exp);
         } catch (IndexNotFoundException exp) {
             logger.error("Index not found in target folder. Run indexing first.", exp);
