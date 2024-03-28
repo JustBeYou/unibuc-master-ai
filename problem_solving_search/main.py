@@ -17,11 +17,26 @@ def main():
     print(puzzle)
 
     ### ### ### ### ###
-    print("A*")
+
+    # print("A* (Naive)")
+    # t = TicToc()
+    # t.tic()
+    # astar = AStar(puzzle)
+    # solution = astar.search()
+    # t.toc()
+
+    # if args.N < 3:
+    #     print("Solution: ", list(map(lambda x: DirectionStr[x], solution)))
+    # print("Solution length:", len(solution))
+    # print()
+
+    ### ### ### ### ###
+
+    print("A* (Manhattan)")
     t = TicToc()
     t.tic()
     astar = AStar(puzzle)
-    solution = astar.search()
+    solution = astar.search(cost_fn="manhattan")
     t.toc()
 
     if args.N < 3:
@@ -31,17 +46,18 @@ def main():
 
     ### ### ### ### ###
 
-    print("BFS with depth and width limiting")
-    t = TicToc()
-    t.tic()
-    bfs = BreadthSearchFirst(puzzle)
-    solution = bfs.search()
-    t.toc()
+    # print("BFS with depth and width limiting")
+    # t = TicToc()
+    # t.tic()
+    # bfs = BreadthSearchFirst(puzzle)
+    # solution = bfs.search()
+    # t.toc()
 
-    if args.N < 3:
-        print("Solution: ", list(map(lambda x: DirectionStr[x], solution)))
-    print("Solution length:", len(solution))
-    print()
+    # if args.N < 3:
+    #     print("Solution: ", list(map(lambda x: DirectionStr[x], solution)))
+    # print("Solution length:", len(solution))
+    # print()
+
     ### ### ### ### ###
 
 
